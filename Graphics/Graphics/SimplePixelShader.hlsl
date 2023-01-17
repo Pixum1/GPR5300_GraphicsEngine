@@ -13,6 +13,7 @@ struct PixelShaderInput
 	float4 pos : SV_POSITION;
 	float3 normal : NORMAL;
 	float4 color : COLOR;
+	float4 posWorld :  POSITION1;
 };
 
 float4 SimplePixelShader(PixelShaderInput _in) : SV_TARGET
@@ -26,12 +27,19 @@ float4 SimplePixelShader(PixelShaderInput _in) : SV_TARGET
 	// dot - Punktprodukt float dot(float4 _a, float4 _b) gibt bei normalisierten Vektoren werte von -1 bis 1 aus, 
 	//				beinhaltet den Innenwinkel
 
-	float3 diffuse = saturate(_in.color.xyz 
+	float3 diffuse = saturate(_in.color.xyz
 								* DiffuseColor.xyz
-								* dot(normalize(LightDir), normalize(_in.normal)) 
+								* dot(normalize(-LightDir), normalize(_in.normal))
 								* DiffuseColor.a);
 
-	float3 specular = float3(0,0,0);
+	// Hilfsvektor ist der durchschnitt aus Lichtrichtung und Punkt zu Kamera
+	// dieser wird mit der normalen verglichen und bei übereinstimmung viel zu glänzen
+	float3 halfVector = normalize(normalize(CameraPos - _in.posWorld.xyz) + normalize(-LightDir));
+
+	float dotP = dot(halfVector, normalize(_in.normal));
+	dotP = pow(dotP, 50);
+
+	float3 specular = saturate(SpecularColor.xyz * dotP * SpecularColor.w);
 
 
 	return float4(saturate(ambient + diffuse + specular), _in.color.a);

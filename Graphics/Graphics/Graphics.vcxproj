@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>\bin</OutDir>
+    <OutDir>..\..\..\..\..\bin</OutDir>
     <TargetName>$(ProjectName)d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>\bin</OutDir>
+    <OutDir>..\..\..\..\..\bin</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -142,21 +142,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CContentManager.cpp" />
-    <ClCompile Include="CCube.cpp" />
-    <ClCompile Include="CEntity.cpp" />
-    <ClCompile Include="CGame.cpp" />
-    <ClCompile Include="COktaeder.cpp" />
+    <ClCompile Include="ContentManager.cpp" />
+    <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Oktaeder.cpp" />
     <ClCompile Include="GraphicsPCH.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CContentManager.h" />
-    <ClInclude Include="CCube.h" />
-    <ClInclude Include="CEntity.h" />
-    <ClInclude Include="CGame.h" />
-    <ClInclude Include="COktaeder.h" />
+    <ClInclude Include="ContentManager.h" />
+    <ClInclude Include="Cube.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Oktaeder.h" />
     <ClInclude Include="ConstantBuffer.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="DirectXSettings.h" />
     <ClInclude Include="GraphicsPCH.h" />
     <ClInclude Include="VertexPosColor.h" />
