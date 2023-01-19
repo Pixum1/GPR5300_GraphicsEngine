@@ -487,62 +487,59 @@ int CGame::LoadLevel()
 
 	CTM.AddEntity(new COktaeder(XMFLOAT4(1, 1, 1, 1), XMFLOAT3(-2, 0, 0)));
 
-	CTM.AddEntity(new CSphere(XMFLOAT4(1, 0, 1, 1), 40, 40));
+	CTM.AddEntity(new CSphere(XMFLOAT4(1, 0, 1, 1), 40, 40, XMFLOAT3(0, 0, 0)));
 
 	return 0;
 }
 
 void CGame::Update(float _deltaTime)
 {
+	// Check for input
 	m_inputManager.DetectInput();
 
+#pragma region Camera_Move_Speed
+	static float camMoveSpeed = 1;
+	if (camMoveSpeed <= 0)
+		camMoveSpeed = 0.01;
+	else if (camMoveSpeed > 100)
+		camMoveSpeed = 100;
+
+	if (m_inputManager.GetKey(DIK_COMMA))
+		camMoveSpeed -= _deltaTime;
+	if (m_inputManager.GetKey(DIK_PERIOD))
+		camMoveSpeed += _deltaTime;
+
+#pragma endregion
+
+	// Shutdown application
 	if (m_inputManager.GetKeyDown(DIK_ESCAPE))
-	{
 		m_isRunning = false;
-	}
 
+	// Change rasterizerstate
 	if (m_inputManager.GetKeyDown(DIK_U))
-	{
 		SwitchRasterizerState();
-	}
 
+#pragma region Camera_Movement
 	XMFLOAT3 camMovement = XMFLOAT3(0, 0, 0);
 	if (m_inputManager.GetKey(DIK_W))
-	{
 		camMovement.z++;
-	}
 	if (m_inputManager.GetKey(DIK_S))
-	{
 		camMovement.z--;
-	}
 	if (m_inputManager.GetKey(DIK_A))
-	{
 		camMovement.x--;
-	}
 	if (m_inputManager.GetKey(DIK_D))
-	{
 		camMovement.x++;
-	}
 	if (m_inputManager.GetKey(DIK_Q))
-	{
 		camMovement.y--;
-	}
 	if (m_inputManager.GetKey(DIK_E))
-	{
 		camMovement.y++;
-	}
-	m_camPos = XMFLOAT3(m_camPos.x + camMovement.x * _deltaTime, 
-		m_camPos.y + camMovement.y * _deltaTime, 
-		m_camPos.z + camMovement.z * _deltaTime);
 
-	/*static float f = 0;
-	f += _deltaTime;
-	if (f > 5)
-	{
-		SwitchRasterizerState();
-		f -= 5;
-	}*/
+	m_camPos = XMFLOAT3(m_camPos.x + camMovement.x * _deltaTime * camMoveSpeed,
+		m_camPos.y + camMovement.y * _deltaTime * camMoveSpeed,
+		m_camPos.z + camMovement.z * _deltaTime * camMoveSpeed);
+#pragma endregion
 
+	// Update entities
 	m_contentManager.Update(_deltaTime);
 }
 

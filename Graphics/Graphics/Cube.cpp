@@ -66,6 +66,6 @@ CCube::~CCube()
 
 void CCube::Update(float _deltaTime)
 {
-	m_rotation.x += 30 * _deltaTime;
-	m_rotation.y += 20 * _deltaTime;
+ 	//p_transform->Rotation.x += 30 * _deltaTime;
+	//p_transform->Rotation.y += 20 * _deltaTime;
 }

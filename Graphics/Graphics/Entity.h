@@ -2,6 +2,7 @@
 
 #include "VertexPosColor.h"
 #include "ConstantBuffer.h"
+#include "Transform.h"
 
 class CEntity
 {
@@ -24,9 +25,8 @@ public:
 		_aligned_free(_memory);
 	}
 
-	XMFLOAT3 m_position;
-	XMFLOAT3 m_rotation;
-	XMFLOAT3 m_scale;
+public:
+	CTransform* p_transform;
 
 protected:
 	SVertexPosColor* m_vertices;

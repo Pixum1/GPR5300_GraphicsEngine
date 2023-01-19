@@ -107,6 +107,6 @@ CSphere::~CSphere()
 
 void CSphere::Update(float _deltaTime)
 {
-	m_rotation.x += -35 * _deltaTime;
-	m_rotation.y += 14 * _deltaTime;
+	p_transform->Rotation.x += -35 * _deltaTime;
+	p_transform->Rotation.y += 14 * _deltaTime;
 }
