@@ -3,7 +3,7 @@
 struct SWindowSettings
 {
 	const long m_WindowWidth = 800;
-	const long m_WindowHeigth = 600;
+	const long m_WindowHeight = 600;
 
 	LPCWSTR m_WindowClassName = L"Graphics Class";
 	LPCSTR m_WindowClassNameShort = "Graphics Class";
