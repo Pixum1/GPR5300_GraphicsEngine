@@ -1,19 +1,22 @@
 #pragma once
+#include <vector>
 
 #include "VertexPosColor.h"
 #include "ConstantBuffer.h"
 #include "Transform.h"
 
+class CComponent;
+
 class CEntity
 {
 public:
-	CEntity(XMFLOAT3 _pos);
+	CEntity(XMFLOAT3 _pos = XMFLOAT3(0,0,0), XMFLOAT3 _rot = XMFLOAT3(0,0,0));
 	virtual ~CEntity();
 
-	virtual bool Initialize();					// Erzeugen, zb Texturen Laden
+	virtual bool Init();					// Erzeugen, zb Texturen Laden
+	virtual bool Start();
 	virtual void Update(float _deltaTime);		// Jeden Frame zur Berechnung
-	virtual void Render();						// Jeden Frame zum Anzeigen
-	virtual void CleanUp();
+	virtual void DeInit();
 
 	static void* operator new(size_t _size)
 	{
@@ -25,20 +28,49 @@ public:
 		_aligned_free(_memory);
 	}
 
+	template<typename T>
+	T* GetComponent();
+
+	template<typename T>
+	T* AddComponent();
+
+	// Testing Methods
+	void Move(float _deltaTime);
+	void Rotate(float _deltaTime);
+
 public:
 	CTransform* p_transform;
 
+	std::vector<CComponent*> AllComponents;
+
+private:
+	float dir = 1;
+
 protected:
-	SVertexPosColor* m_vertices;
-	WORD* m_indices;
-
-	int m_vertexCount;
-	int m_indexCount;
-
-	ID3D11Buffer* m_vertexBuffer;
-	ID3D11Buffer* m_indexBuffer;
-
-	SStandardConstantBuffer m_objectConstantBuffer;
 	bool m_InValid = false;
 };
 
+template<typename T>
+inline T* CEntity::GetComponent()
+{
+	for (CComponent* c : AllComponents)
+	{
+		if (T* component = dynamic_cast<T*>(c))
+		{
+			return component;
+		}
+	}
+	return nullptr;
+}
+
+template<typename T>
+inline T* CEntity::AddComponent()
+{
+	if (std::is_base_of<CComponent, T>::value)
+	{
+		T* c = new T(this);
+		AllComponents.push_back(c);
+		return c;
+	}
+	return nullptr;
+}

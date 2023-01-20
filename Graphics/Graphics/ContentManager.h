@@ -15,6 +15,10 @@ public:
 	bool RemoveEntity(CEntity* _entity);
 	bool ContainsEntity(CEntity* _entity);
 
+public:
+	bool RotateAll;
+	bool Move;
+
 private:
 	void CleanUp();
 

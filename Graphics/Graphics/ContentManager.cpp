@@ -1,5 +1,6 @@
 #include "GraphicsPCH.h"
 #include "ContentManager.h"
+#include "Mesh.h"
 
 CContentManager::CContentManager()
 {
@@ -19,6 +20,16 @@ void CContentManager::Update(float _deltaTime)
 	for (auto itr : m_entities)
 	{
 		itr->Update(_deltaTime);
+
+		if (RotateAll)
+		{
+			itr->Rotate(_deltaTime);
+		}
+
+		if (Move)
+		{
+			itr->Move(_deltaTime);
+		}
 	}
 
 	CleanUp();
@@ -28,7 +39,10 @@ void CContentManager::Render()
 {
 	for (auto itr : m_entities)
 	{
-		itr->Render();
+		if (itr->GetComponent<CMesh>() != nullptr)
+		{
+			itr->GetComponent<CMesh>()->Render();
+		}
 	}
 }
 
@@ -39,7 +53,7 @@ bool CContentManager::AddEntity(CEntity* _entity)
 		return false;
 	}
 
-	if (_entity->Initialize())
+	if (_entity->Init())
 	{
 		m_entities.push_back(_entity);
 	}
@@ -81,7 +95,7 @@ void CContentManager::CleanUp()
 	for (auto itr : m_entitiesToDelete)
 	{
 		m_entities.remove(itr);
-		itr->CleanUp();
+		itr->DeInit();
 		delete(itr);
 	}
 

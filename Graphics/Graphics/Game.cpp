@@ -1,8 +1,7 @@
 #include "GraphicsPCH.h"
 #include "Game.h"
-#include "Cube.h"
-#include "Oktaeder.h"
-#include "Sphere.h"
+#include "Mesh.h"
+#include "Component.h"
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam);
 
@@ -464,7 +463,7 @@ void CGame::Render()
 	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_FRAME],
 		0, nullptr, &m_frameConstantBuffer, 0, 0);
 
-	m_lightConstantBuffer.AmbientColor = XMFLOAT4(0.1f, 0.1f, 0.1f, 1);
+	m_lightConstantBuffer.AmbientColor = XMFLOAT4(0.25f, 0.25f, 0.25f, 1);
 	m_lightConstantBuffer.DiffuseColor = XMFLOAT4(0.8f, 0.8f, 0.8f, 1);
 	m_lightConstantBuffer.SpecularColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1);
 	m_lightConstantBuffer.CameraPos = m_camPos;
@@ -483,11 +482,20 @@ int CGame::LoadLevel()
 {
 	//m_directXSettings.m_currentRasterrizerState = m_directXSettings.m_rasterrizerStateWireframe;
 
-	CTM.AddEntity(new CCube(XMFLOAT3(2, 0, 0)));
+	// Cube
+	CEntity* CubeObject = new CEntity(XMFLOAT3(0, 0, 0));
+	SHC.CreateCube(CubeObject->AddComponent<CMesh>(), XMFLOAT4(0.33f, 0.69f, 0.33f, 1.0f));
+	CTM.AddEntity(CubeObject);
 
-	CTM.AddEntity(new COktaeder(XMFLOAT4(1, 1, 1, 1), XMFLOAT3(-2, 0, 0)));
+	// Oktaeder
+	CEntity* OktaederObject = new CEntity(XMFLOAT3(-2, 0, 0));
+	SHC.CreateOktaeder(OktaederObject->AddComponent<CMesh>(), XMFLOAT4(0.79f, 0.57f, 0.66f, 1.0f));
+	CTM.AddEntity(OktaederObject);
 
-	CTM.AddEntity(new CSphere(XMFLOAT4(1, 0, 1, 1), 40, 40, XMFLOAT3(0, 0, 0)));
+	// Sphere
+	CEntity* SphereObject = new CEntity(XMFLOAT3(2, 0, 0));
+	SHC.CreateSphere(SphereObject->AddComponent<CMesh>(), 40, 40, XMFLOAT4(0.54f, 0.9f, 0.93f, 1.0f));
+	CTM.AddEntity(SphereObject);
 
 	return 0;
 }
@@ -515,9 +523,7 @@ void CGame::Update(float _deltaTime)
 	if (m_inputManager.GetKeyDown(DIK_ESCAPE))
 		m_isRunning = false;
 
-	// Change rasterizerstate
-	if (m_inputManager.GetKeyDown(DIK_U))
-		SwitchRasterizerState();
+	
 
 #pragma region Camera_Movement
 	XMFLOAT3 camMovement = XMFLOAT3(0, 0, 0);
@@ -529,15 +535,36 @@ void CGame::Update(float _deltaTime)
 		camMovement.x--;
 	if (m_inputManager.GetKey(DIK_D))
 		camMovement.x++;
-	if (m_inputManager.GetKey(DIK_Q))
+	if (m_inputManager.GetKey(DIK_LCONTROL))
 		camMovement.y--;
-	if (m_inputManager.GetKey(DIK_E))
+	if (m_inputManager.GetKey(DIK_SPACE))
 		camMovement.y++;
 
 	m_camPos = XMFLOAT3(m_camPos.x + camMovement.x * _deltaTime * camMoveSpeed,
 		m_camPos.y + camMovement.y * _deltaTime * camMoveSpeed,
 		m_camPos.z + camMovement.z * _deltaTime * camMoveSpeed);
 #pragma endregion
+
+
+#pragma region Experimental_Testing
+	// Rotate all objects
+	if (IPM.GetKey(DIK_1))
+		CTM.RotateAll = true;
+	else if (IPM.GetKeyUp(DIK_1))
+		CTM.RotateAll = false;
+
+	//Move all objects up and down
+	if (IPM.GetKey(DIK_2))
+		CTM.Move = true;
+	else if (IPM.GetKeyUp(DIK_2))
+		CTM.Move = false;
+
+	// Change rasterizerstate
+	if (m_inputManager.GetKeyDown(DIK_3))
+		SwitchRasterizerState();
+#pragma endregion
+
+
 
 	// Update entities
 	m_contentManager.Update(_deltaTime);
