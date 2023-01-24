@@ -71,6 +71,9 @@ public:
 
 	void SwitchRasterizerState();
 
+	float movementSpeed = 4;
+	float rotationSpeed = 4;
+
 private:
 	int InitApplication(HINSTANCE _hInstance);
 	int InitDirectX();
@@ -78,6 +81,7 @@ private:
 	int LoadLevel();
 
 	int CreateSimpleShader();
+	int CreateTexturedShader();
 
 	void ClearBackBuffer(const float _clearColor[4], float _clearDepth, UINT8 _clearStencil);
 

@@ -12,6 +12,7 @@ CEntity::CEntity(XMFLOAT3 _pos, XMFLOAT3 _rot)
 
 CEntity::~CEntity()
 {
+
 }
 
 bool CEntity::Init()

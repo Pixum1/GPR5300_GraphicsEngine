@@ -2,6 +2,9 @@
 #include "Game.h"
 #include "Mesh.h"
 #include "Component.h"
+#include "Helper.h"
+
+#include "TextureData.h"
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam);
 
@@ -49,6 +52,12 @@ int CGame::Initialize(HINSTANCE _hInstance)
 	if (FAILED(returnValue))
 	{
 		MessageBox(nullptr, L"Could not create Simple shader", L"Error", MB_OK);
+		return returnValue;
+	}
+	returnValue = CreateTexturedShader();
+	if (FAILED(returnValue))
+	{
+		MessageBox(nullptr, L"Could not create Textured shader", L"Error", MB_OK);
 		return returnValue;
 	}
 
@@ -431,6 +440,88 @@ int CGame::CreateSimpleShader()
 	return 0;
 }
 
+int CGame::CreateTexturedShader()
+{
+	ID3DBlob* shaderBlob;
+
+#if _DEBUG
+	LPCWSTR compiledShaderName = L"TexturedVertexShader_d.cso";
+#else
+	LPCWSTR compiledShaderName = L"TexturedVertexShader.cso";
+#endif
+
+	HRESULT hr = D3DReadFileToBlob(compiledShaderName, &shaderBlob);
+	FAILHR(-55);
+
+	hr = m_directXSettings.m_device->CreateVertexShader(shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(), nullptr, &m_directXSettings.m_texturedVertexShader);
+	FAILHR(-56);
+
+	D3D11_INPUT_ELEMENT_DESC vertexLayoutDesc[] =
+	{
+		{
+			"POSITION",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32B32_FLOAT,	// Float3
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, Position),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		},
+		{
+			"NORMAL",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32B32_FLOAT,	// Float3
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, Normal),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		},
+		{
+			"COLOR",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32B32A32_FLOAT,	// Float4
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, Color),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		},
+		{
+			"TEXCOORD",						// Semantic - Identifikation im Shader
+			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
+			DXGI_FORMAT_R32G32_FLOAT,		// Float2
+			0,								// Falls mehr als ein VertexShader vorhanden ist
+			offsetof(SVertexPosColor, UV),
+			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
+			0
+		}
+	};
+
+	hr = m_directXSettings.m_device->CreateInputLayout(vertexLayoutDesc,
+		_countof(vertexLayoutDesc),
+		shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		&m_directXSettings.m_texturedInputLayout);
+	FAILHR(-57);
+
+
+#if _DEBUG
+	compiledShaderName = L"TexturedPixelShader_d.cso";
+#else
+	compiledShaderName = L"TexturedPixelShader.cso";
+#endif
+	hr = D3DReadFileToBlob(compiledShaderName, &shaderBlob);
+	FAILHR(-58);
+
+	hr = m_directXSettings.m_device->CreatePixelShader(shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(),
+		nullptr,
+		&m_directXSettings.m_texturedPixelShader);
+	FAILHR(-59);
+
+	return 0;
+}
+
 void CGame::ClearBackBuffer(const float _clearColor[4], float _clearDepth, UINT8 _clearStencil)
 {
 	m_directXSettings.m_deviceContext->ClearRenderTargetView(m_directXSettings.m_renderTargetView,
@@ -485,17 +576,24 @@ int CGame::LoadLevel()
 	// Cube
 	CEntity* CubeObject = new CEntity(XMFLOAT3(0, 0, 0));
 	SHC.CreateCube(CubeObject->AddComponent<CMesh>(), XMFLOAT4(0.33f, 0.69f, 0.33f, 1.0f));
-	CTM.AddEntity(CubeObject);
 
 	// Oktaeder
 	CEntity* OktaederObject = new CEntity(XMFLOAT3(-2, 0, 0));
 	SHC.CreateOktaeder(OktaederObject->AddComponent<CMesh>(), XMFLOAT4(0.79f, 0.57f, 0.66f, 1.0f));
-	CTM.AddEntity(OktaederObject);
 
 	// Sphere
 	CEntity* SphereObject = new CEntity(XMFLOAT3(2, 0, 0));
 	SHC.CreateSphere(SphereObject->AddComponent<CMesh>(), 40, 40, XMFLOAT4(0.54f, 0.9f, 0.93f, 1.0f));
+
+	CEntity* TexturedPlane = new CEntity(XMFLOAT3(0, -2, 0));
+	SHC.CreatePlane(TexturedPlane->AddComponent<CMesh>(), XMFLOAT4(1, 1, 1, 1));
+	TexturedPlane->GetComponent<CMesh>()->AddTexture(L"test.png");
+
+	// Add all entities to the content manager -- !IMPORTANT!
+	CTM.AddEntity(CubeObject);
+	CTM.AddEntity(OktaederObject);
 	CTM.AddEntity(SphereObject);
+	CTM.AddEntity(TexturedPlane);
 
 	return 0;
 }
@@ -505,46 +603,55 @@ void CGame::Update(float _deltaTime)
 	// Check for input
 	m_inputManager.DetectInput();
 
-#pragma region Camera_Move_Speed
-	static float camMoveSpeed = 1;
-	if (camMoveSpeed <= 0)
-		camMoveSpeed = 0.01;
-	else if (camMoveSpeed > 100)
-		camMoveSpeed = 100;
-
-	if (m_inputManager.GetKey(DIK_COMMA))
-		camMoveSpeed -= _deltaTime;
-	if (m_inputManager.GetKey(DIK_PERIOD))
-		camMoveSpeed += _deltaTime;
-
-#pragma endregion
-
 	// Shutdown application
 	if (m_inputManager.GetKeyDown(DIK_ESCAPE))
 		m_isRunning = false;
 
-	
-
 #pragma region Camera_Movement
+
+	movementSpeed = Clamp(movementSpeed + m_inputManager.GetMouseWheel() * 0.005, 1, 10);
+
+	XMVECTOR f = { 0, 0, 1, 0 };
+	XMVECTOR r = { 1, 0, 0, 0 };
+	XMVECTOR u = { 0, 1, 1, 0 };
+
+	XMMATRIX m = XMMatrixRotationRollPitchYaw(
+		XMConvertToRadians(m_camRot.x),
+		XMConvertToRadians(m_camRot.y),
+		XMConvertToRadians(m_camRot.z));
+
+	f = XMVector3Transform(f, m);
+	r = XMVector3Transform(r, m);
+	u = XMVector3Transform(u, m);
+
+	XMFLOAT3 forward = XMFLOAT3(f.m128_f32[0], f.m128_f32[1], f.m128_f32[2]);
+	XMFLOAT3 right = XMFLOAT3(r.m128_f32[0], r.m128_f32[1], r.m128_f32[2]);
+	XMFLOAT3 up = XMFLOAT3(u.m128_f32[0], u.m128_f32[1], u.m128_f32[2]);
+
 	XMFLOAT3 camMovement = XMFLOAT3(0, 0, 0);
+
 	if (m_inputManager.GetKey(DIK_W))
-		camMovement.z++;
+		camMovement = camMovement + forward;
 	if (m_inputManager.GetKey(DIK_S))
-		camMovement.z--;
+		camMovement = camMovement - forward;
 	if (m_inputManager.GetKey(DIK_A))
-		camMovement.x--;
+		camMovement = camMovement - right;
 	if (m_inputManager.GetKey(DIK_D))
-		camMovement.x++;
+		camMovement = camMovement + right;
 	if (m_inputManager.GetKey(DIK_LCONTROL))
-		camMovement.y--;
+		camMovement.y -= 1;
 	if (m_inputManager.GetKey(DIK_SPACE))
-		camMovement.y++;
+		camMovement.y += 1;
 
-	m_camPos = XMFLOAT3(m_camPos.x + camMovement.x * _deltaTime * camMoveSpeed,
-		m_camPos.y + camMovement.y * _deltaTime * camMoveSpeed,
-		m_camPos.z + camMovement.z * _deltaTime * camMoveSpeed);
+	m_camPos = m_camPos + camMovement * _deltaTime * movementSpeed;
+
+	if (m_inputManager.GetMouseKey(1))
+	{
+		XMFLOAT2 mouseDelta = m_inputManager.GetMouseMovement();
+		m_camRot.x += mouseDelta.y * _deltaTime * rotationSpeed;
+		m_camRot.y += mouseDelta.x * _deltaTime * rotationSpeed;
+	}
 #pragma endregion
-
 
 #pragma region Experimental_Testing
 	// Rotate all objects
@@ -563,8 +670,6 @@ void CGame::Update(float _deltaTime)
 	if (m_inputManager.GetKeyDown(DIK_3))
 		SwitchRasterizerState();
 #pragma endregion
-
-
 
 	// Update entities
 	m_contentManager.Update(_deltaTime);
