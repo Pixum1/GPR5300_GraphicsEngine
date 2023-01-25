@@ -143,8 +143,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AssetManager.cpp" />
+    <ClCompile Include="Button2D.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="ContentManager.cpp" />
+    <ClCompile Include="Cursor.cpp" />
+    <ClCompile Include="Entity2D.cpp" />
+    <ClCompile Include="Image2D.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="ShapeCreator.cpp" />
     <ClCompile Include="TextureData.cpp" />
@@ -154,14 +158,19 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="GraphicsPCH.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Transform2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetManager.h" />
+    <ClInclude Include="Button2D.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ContentManager.h" />
+    <ClInclude Include="Cursor.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="Entity2D.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Helper.h" />
+    <ClInclude Include="Image2D.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="ConstantBuffer.h" />
@@ -170,6 +179,7 @@
     <ClInclude Include="GraphicsPCH.h" />
     <ClInclude Include="TextureData.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="Transform2D.h" />
     <ClInclude Include="VertexPosColor.h" />
     <ClInclude Include="WindowSettings.h" />
   </ItemGroup>

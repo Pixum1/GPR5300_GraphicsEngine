@@ -40,7 +40,6 @@ STextureData* CAssetManager::LoadTexture(LPCWSTR _fileName, D3D11_TEXTURE_ADDRES
 		desc.MaxLOD = D3D11_FLOAT32_MAX;
 
 		DXS.m_device->CreateSamplerState(&desc, &ts);
-
 		m_textures[_fileName] = new STextureData(t, srv, ts);
 	}
 

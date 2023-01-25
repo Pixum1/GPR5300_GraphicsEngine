@@ -3,7 +3,7 @@
 #include "Mesh.h"
 #include "Component.h"
 #include "Helper.h"
-
+#include "Button2D.h"
 #include "TextureData.h"
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam);
@@ -47,6 +47,8 @@ int CGame::Initialize(HINSTANCE _hInstance)
 		MessageBox(nullptr, L"Failed to initialize Constant Buffers", L"Error", MB_OK);
 		return returnValue;
 	}
+
+	CTM.Init();
 
 	returnValue = CreateSimpleShader();
 	if (FAILED(returnValue))
@@ -567,6 +569,10 @@ void CGame::Render()
 	m_directXSettings.m_swapChain->Present(1, 0);
 }
 
+void ClickTest(CButton2D* _caller) 
+{
+	CTM.RemoveEntity(_caller);
+}
 
 int CGame::LoadLevel()
 {
@@ -598,6 +604,10 @@ int CGame::LoadLevel()
 	TexturedPlane->GetComponent<CMesh>()->AddTexture(L"test.png", WRAP, LINEAR);
 
 	CTM.AddEntity(TexturedPlane);		// !IMPORTANT! Add Entity to Content Manager
+
+
+	CTM.AddEntity(new CButton2D(XMFLOAT2(m_windowSettings.m_WindowWidth - 512, 0), L"Button.png", ClickTest));
+
 	return 0;
 }
 
