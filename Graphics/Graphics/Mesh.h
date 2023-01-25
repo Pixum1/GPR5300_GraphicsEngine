@@ -19,7 +19,7 @@ public:
 
 	void Render();
 	//void SetMaterial();
-	int AddTexture(LPCWSTR _fileName);
+	int AddTexture(LPCWSTR _fileName, D3D11_TEXTURE_ADDRESS_MODE _sampleMode, D3D11_FILTER _filter);
 
 public:
 	SVertexPosColor* Vertices;
@@ -30,7 +30,7 @@ public:
 protected:
 	//Material* p_material;
 	bool m_usesTexture;
-	STextureData m_textureData;
+	STextureData* m_textureData;
 
 	ID3D11Buffer* m_vertexBuffer;
 	ID3D11Buffer* m_indexBuffer;

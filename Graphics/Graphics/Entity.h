@@ -37,6 +37,7 @@ public:
 	// Testing Methods
 	void Move(float _deltaTime);
 	void Rotate(float _deltaTime);
+	void Resize(float _deltatime);
 
 public:
 	CTransform* p_transform;
@@ -45,6 +46,8 @@ public:
 
 private:
 	float dir = 1;
+	float m_time = 0;
+	XMFLOAT3 m_startPos;
 
 protected:
 	bool m_InValid = false;

@@ -75,8 +75,8 @@ void CMesh::Render()
 		// Pixel Shader
 		DXS.m_deviceContext->PSSetConstantBuffers(0, 1, &DXS.m_constantBuffers[CB_LIGHT]);
 		DXS.m_deviceContext->PSSetShader(DXS.m_texturedPixelShader, nullptr, 0);
-		DXS.m_deviceContext->PSSetSamplers(0, 1, &m_textureData.m_textureSampler);
-		DXS.m_deviceContext->PSSetShaderResources(0, 1, &m_textureData.m_shaderResourceView);
+		DXS.m_deviceContext->PSSetSamplers(0, 1, &m_textureData->m_textureSampler);
+		DXS.m_deviceContext->PSSetShaderResources(0, 1, &m_textureData->m_shaderResourceView);
 
 		// Output Merger
 		DXS.m_deviceContext->OMSetRenderTargets(1, &DXS.m_renderTargetView, DXS.m_depthStencilView);
@@ -122,25 +122,10 @@ void CMesh::Render()
 	}
 }
 
-int CMesh::AddTexture(LPCWSTR _fileName)
+int CMesh::AddTexture(LPCWSTR _fileName, D3D11_TEXTURE_ADDRESS_MODE _sampleMode, D3D11_FILTER _filter)
 {
-	HRESULT hr = CreateWICTextureFromFile(DXS.m_device, _fileName, &m_textureData.m_texture, &m_textureData.m_shaderResourceView);
-	if (FAILED(hr))
-	{
-		MessageBox(nullptr, _fileName, L"Error", MB_OK);
-	}
-
-	D3D11_SAMPLER_DESC desc;
-	ZeroMemory(&desc, sizeof(D3D11_SAMPLER_DESC));
-	desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR; // Lineare Interpolation
-	desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	desc.MinLOD = 0;
-	desc.MaxLOD = D3D11_FLOAT32_MAX;
-
-	DXS.m_device->CreateSamplerState(&desc, &m_textureData.m_textureSampler);
-
+	m_textureData = ASM.LoadTexture(_fileName, _sampleMode, _filter);
 	m_usesTexture = true;
+
 	return 0;
 }

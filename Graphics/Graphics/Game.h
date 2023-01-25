@@ -6,12 +6,23 @@
 #include "ContentManager.h"
 #include "InputManager.h"
 #include "ShapeCreator.h"
+#include "AssetManager.h"
 
 #define WDS (*(CGame::Get()->GetWindowSettings()))
 #define DXS (*(CGame::Get()->GetDirectXSettings()))
 #define CTM (*(CGame::Get()->GetContentManager()))
 #define IPM (*(CGame::Get()->GetInputManager()))
 #define SHC (*(CGame::Get()->GetShapeCreator()))
+#define ASM (*(CGame::Get()->GetAssetManager()))
+
+#define WRAP (D3D11_TEXTURE_ADDRESS_WRAP)
+#define MIRROR (D3D11_TEXTURE_ADDRESS_MIRROR)
+#define MIRROR_ONCE (D3D11_TEXTURE_ADDRESS_MIRROR_ONCE)
+#define CLAMP (D3D11_TEXTURE_ADDRESS_CLAMP)
+#define BORDER (D3D11_TEXTURE_ADDRESS_BORDER)
+
+#define LINEAR (D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR)
+#define POINT (D3D11_FILTER_COMPARISON_MIN_MAG_MIP_POINT)
 
 #define FAILHR(errorcode) if (FAILED(hr)) { return errorcode; }
 
@@ -48,6 +59,7 @@ private:
 	CContentManager m_contentManager;
 	CInputManager m_inputManager;
 	CShapeCreator m_shapeCreator;
+	CAssetManager m_assetManager;
 
 	XMFLOAT3 m_camPos;
 	XMFLOAT3 m_camRot;
@@ -68,6 +80,7 @@ public:
 	inline CContentManager* GetContentManager() { return &m_contentManager; }
 	inline CInputManager* GetInputManager() { return &m_inputManager; }
 	inline CShapeCreator* GetShapeCreator() { return &m_shapeCreator; }
+	inline CAssetManager* GetAssetManager() { return &m_assetManager; }
 
 	void SwitchRasterizerState();
 

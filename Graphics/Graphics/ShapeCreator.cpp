@@ -1,3 +1,4 @@
+#include "GraphicsPCH.h"
 #include "ShapeCreator.h"
 
 void CShapeCreator::CreateCube(CMesh* _p_mesh, XMFLOAT4 _color)
@@ -114,7 +115,7 @@ void CShapeCreator::CreateSphere(CMesh* _p_mesh, int _slices, int _heightSegment
 		return;
 	}
 
-	_p_mesh->m_vertexCount = _slices * _heightSegments + 2;
+	_p_mesh->m_vertexCount = _slices * _heightSegments + 2 + _heightSegments;
 	_p_mesh->m_indexCount = _heightSegments * _slices * 6;
 
 	_p_mesh->Vertices = new SVertexPosColor[_p_mesh->m_vertexCount];
@@ -125,7 +126,7 @@ void CShapeCreator::CreateSphere(CMesh* _p_mesh, int _slices, int _heightSegment
 
 	int i = 0;
 	// polkappe oben
-	_p_mesh->Vertices[i++] = { XMFLOAT3(0.0f, 0.5f, 0.0f),XMFLOAT3(0, 0.5f, 0), _color };
+	_p_mesh->Vertices[i++] = { XMFLOAT3(0.0f, 0.5f, 0.0f),XMFLOAT3(0, 0.5f, 0), _color, XMFLOAT2(0.5f, 0)};
 	XMFLOAT3 pos;
 	float yPos;
 	float radius;
@@ -133,13 +134,13 @@ void CShapeCreator::CreateSphere(CMesh* _p_mesh, int _slices, int _heightSegment
 	{
 		yPos = cos(((y + 1) / (_heightSegments + 1) * XM_PI));
 		radius = sin(((y + 1) / (_heightSegments + 1) * XM_PI));
-		for (float x = 0; x < _slices; x++)
+		for (float x = 0; x <= _slices; x++)
 		{
 			pos = XMFLOAT3(sin(x / _slices * XM_2PI) * 0.5f * radius, yPos * 0.5f, cos(x / _slices * XM_2PI) * 0.5f * radius);
-			_p_mesh->Vertices[i++] = { pos, pos, _color };
+			_p_mesh->Vertices[i++] = { pos, pos, _color, XMFLOAT2(1-(x / _slices), y / _heightSegments)};
 		}
 	}
-	_p_mesh->Vertices[i++] = { XMFLOAT3(0.0f, -0.5f, 0.0f),XMFLOAT3(0, -0.5f, 0), _color };
+	_p_mesh->Vertices[i++] = { XMFLOAT3(0.0f, -0.5f, 0.0f),XMFLOAT3(0, -0.5f, 0), _color, XMFLOAT2(0.5f, 1) };
 
 	i = 0;
 	// polkappe oben
@@ -148,14 +149,14 @@ void CShapeCreator::CreateSphere(CMesh* _p_mesh, int _slices, int _heightSegment
 		_p_mesh->Indices[i++] = 0;
 		_p_mesh->Indices[i++] = x + 1;
 
-		if (x != _slices - 1)
+		//if (x != _slices - 1)
 		{
 			_p_mesh->Indices[i++] = x + 2;
 		}
-		else
+		/*else
 		{
 			_p_mesh->Indices[i++] = 1;
-		}
+		}*/
 	}
 
 	// mitte
@@ -163,17 +164,17 @@ void CShapeCreator::CreateSphere(CMesh* _p_mesh, int _slices, int _heightSegment
 	{
 		for (int x = 0; x < _slices; x++)
 		{
-			if (x < _slices - 1)
+			//if (x < _slices - 1)
 			{
-				_p_mesh->Indices[i++] = x + 1 + y * _slices;
-				_p_mesh->Indices[i++] = x + 1 + _slices + y * _slices;
-				_p_mesh->Indices[i++] = x + 2 + y * _slices;
+				_p_mesh->Indices[i++] = x + 1 + y * (_slices + 1);
+				_p_mesh->Indices[i++] = x + 1 + (_slices + 1) + y * (_slices + 1);
+				_p_mesh->Indices[i++] = x + 2 + y * (_slices + 1);
 
-				_p_mesh->Indices[i++] = x + 2 + y * _slices;
-				_p_mesh->Indices[i++] = x + 1 + _slices + y * _slices;
-				_p_mesh->Indices[i++] = x + 2 + _slices + y * _slices;
+				_p_mesh->Indices[i++] = x + 2 + y * (_slices + 1);
+				_p_mesh->Indices[i++] = x + 1 + (_slices + 1) + y * (_slices + 1);
+				_p_mesh->Indices[i++] = x + 2 + (_slices + 1) + y * (_slices + 1);
 			}
-			else
+			/*else
 			{
 				_p_mesh->Indices[i++] = x + 1 + y * _slices;
 				_p_mesh->Indices[i++] = x + 1 + _slices + y * _slices;
@@ -182,26 +183,25 @@ void CShapeCreator::CreateSphere(CMesh* _p_mesh, int _slices, int _heightSegment
 				_p_mesh->Indices[i++] = x + 2 + (y - 1) * _slices;
 				_p_mesh->Indices[i++] = x + 1 + _slices + y * _slices;
 				_p_mesh->Indices[i++] = x + 2 + _slices + (y - 1) * _slices;
-			}
+			}*/
 		}
 	}
 
 	// polkappe unten
 	for (int x = 0; x < _slices; x++)
 	{
-		if (x < _slices - 1)
+		//if (x < _slices - 1)
 		{
 			_p_mesh->Indices[i++] = _p_mesh->m_vertexCount - 1;
-			_p_mesh->Indices[i++] = _p_mesh->m_vertexCount - 1 - _slices + 1 + x;
-			_p_mesh->Indices[i++] = _p_mesh->m_vertexCount - 1 - _slices + x;
+			_p_mesh->Indices[i++] = _p_mesh->m_vertexCount - 1 - (_slices + 1) + 1 + x;
+			_p_mesh->Indices[i++] = _p_mesh->m_vertexCount - 1 - (_slices + 1) + x;
 		}
-		else
+		/*else
 		{
 			_p_mesh->Indices[i++] = _p_mesh->m_vertexCount - 1;
 			_p_mesh->Indices[i++] = _p_mesh->m_vertexCount - 1 - _slices;
 			_p_mesh->Indices[i++] = _p_mesh->m_vertexCount - 1 - _slices + x;
-
-		}
+		}*/
 	}
 }
 

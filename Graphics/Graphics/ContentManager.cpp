@@ -21,7 +21,7 @@ void CContentManager::Update(float _deltaTime)
 	{
 		itr->Update(_deltaTime);
 
-		if (RotateAll)
+		if (Rotate)
 		{
 			itr->Rotate(_deltaTime);
 		}
@@ -29,6 +29,11 @@ void CContentManager::Update(float _deltaTime)
 		if (Move)
 		{
 			itr->Move(_deltaTime);
+		}
+
+		if (Resize)
+		{
+			itr->Resize(_deltaTime);
 		}
 	}
 

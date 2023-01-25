@@ -16,8 +16,9 @@ public:
 	bool ContainsEntity(CEntity* _entity);
 
 public:
-	bool RotateAll;
+	bool Rotate;
 	bool Move;
+	bool Resize;
 
 private:
 	void CleanUp();
