@@ -54,8 +54,8 @@ int CGame::Initialize(HINSTANCE _hInstance)
 
 	// Create all materials
 	simpleMaterial = new CSimpleMaterial(m_directXSettings.m_device, m_directXSettings.m_deviceContext);
-	worldMapMaterial = new CTexturedMaterial(m_directXSettings.m_device, m_directXSettings.m_deviceContext, L"WorldMap.jpeg", WRAP, LINEAR);
-	happyMaterial = new CTexturedMaterial(m_directXSettings.m_device, m_directXSettings.m_deviceContext, L"test.png", WRAP, LINEAR);
+	worldMapMaterial = new CTexturedMaterial(m_directXSettings.m_device, m_directXSettings.m_deviceContext, L"Assets\\WorldMap.jpeg", WRAP, LINEAR);
+	happyMaterial = new CTexturedMaterial(m_directXSettings.m_device, m_directXSettings.m_deviceContext, L"Assets\\test.png", WRAP, LINEAR);
 
 	returnValue = m_inputManager.InitDirectInput(_hInstance);
 	if (FAILED(returnValue))
@@ -430,7 +430,7 @@ int CGame::LoadLevel()
 	TexturedPlane->GetComponent<CMesh>()->SetMaterial(happyMaterial);
 	CTM.AddEntity(TexturedPlane);		// !IMPORTANT! Add Entity to Content Manager
 
-	// CTM.AddEntity(new CButton2D(XMFLOAT2(m_windowSettings.m_WindowWidth - 512, 0), L"Button.png", ClickTest));
+	// CTM.AddEntity(new CButton2D(XMFLOAT2(m_windowSettings.m_WindowWidth - 512, 0), L"Assets\\Button.png", ClickTest));
 
 	return 0;
 }

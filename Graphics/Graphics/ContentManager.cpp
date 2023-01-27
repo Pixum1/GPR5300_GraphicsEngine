@@ -15,8 +15,8 @@ CContentManager::~CContentManager()
 void CContentManager::Init()
 {
 	m_spriteBatch = new SpriteBatch(DXS.m_deviceContext);
-	m_spriteFont = new SpriteFont(DXS.m_device, L"cambria.spritefont");
-	m_cursor = new CCursor(L"cursor.png");
+	m_spriteFont = new SpriteFont(DXS.m_device, L"Assets\\cambria.spritefont");
+	m_cursor = new CCursor(L"Assets\\cursor.png");
 }
 
 void CContentManager::Update(float _deltaTime)
