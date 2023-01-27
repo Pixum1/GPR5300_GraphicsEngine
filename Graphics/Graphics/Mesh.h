@@ -4,10 +4,13 @@
 #include "Component.h"
 #include "TextureData.h"
 
+class CMaterial;
+
 class CMesh : public CComponent
 {
 public:
-	CMesh(CEntity* _p_entity) : CComponent(_p_entity) {
+	CMesh(CEntity* _p_entity) : CComponent(_p_entity) 
+	{
 		// additional initialization
 		m_usesTexture = false;
 	}
@@ -18,19 +21,17 @@ public:
 	virtual bool DeInit() override;
 
 	void Render();
-	//void SetMaterial();
-	int AddTexture(LPCWSTR _fileName, D3D11_TEXTURE_ADDRESS_MODE _sampleMode, D3D11_FILTER _filter);
+	void SetMaterial(CMaterial* _mat);
 
 public:
 	SVertexPosColor* Vertices;
 	WORD* Indices;
 	int m_vertexCount;
 	int m_indexCount;
+	CMaterial* p_material;
 
 protected:
-	//Material* p_material;
 	bool m_usesTexture;
-	STextureData* m_textureData;
 
 	ID3D11Buffer* m_vertexBuffer;
 	ID3D11Buffer* m_indexBuffer;

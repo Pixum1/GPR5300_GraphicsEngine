@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "ContentManager.h"
 #include "Mesh.h"
+#include "Material.h"
 
 CContentManager::CContentManager()
 {
@@ -55,6 +56,9 @@ void CContentManager::Render()
 	{
 		if (itr->GetComponent<CMesh>() != nullptr)
 		{
+			if (itr->GetComponent<CMesh>()->p_material != nullptr)
+				itr->GetComponent<CMesh>()->p_material->Render();
+			
 			itr->GetComponent<CMesh>()->Render();
 		}
 	}

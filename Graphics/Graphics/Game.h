@@ -26,6 +26,9 @@
 
 #define FAILHR(errorcode) if (FAILED(hr)) { return errorcode; }
 
+class CSimpleMaterial;
+class CTexturedMaterial;
+
 class CGame
 {
 private:
@@ -70,6 +73,10 @@ private:
 
 	bool m_isRunning;
 
+	CSimpleMaterial* simpleMaterial;
+	CTexturedMaterial* worldMapMaterial;
+	CTexturedMaterial* happyMaterial;
+
 public:
 	int Initialize(HINSTANCE _hInstance);
 	int Run();
@@ -93,8 +100,8 @@ private:
 	int InitConstantBuffers();
 	int LoadLevel();
 
-	int CreateSimpleShader();
-	int CreateTexturedShader();
+	/*int CreateSimpleShader();
+	int CreateTexturedShader();*/
 
 	void ClearBackBuffer(const float _clearColor[4], float _clearDepth, UINT8 _clearStencil);
 

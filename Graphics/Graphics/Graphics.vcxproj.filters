@@ -66,6 +66,15 @@
     <ClCompile Include="Transform2D.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleMaterial.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="TexturedMaterial.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsPCH.h">
@@ -131,6 +140,15 @@
     <ClInclude Include="Transform2D.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleMaterial.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="TexturedMaterial.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="SimpleVertexShader.hlsl">
@@ -143,6 +161,12 @@
       <Filter>Ressourcendateien</Filter>
     </FxCompile>
     <FxCompile Include="TexturedPixelShader.hlsl">
+      <Filter>Ressourcendateien</Filter>
+    </FxCompile>
+    <FxCompile Include="TestVertexShader.hlsl">
+      <Filter>Ressourcendateien</Filter>
+    </FxCompile>
+    <FxCompile Include="TestPixelShader.hlsl">
       <Filter>Ressourcendateien</Filter>
     </FxCompile>
   </ItemGroup>

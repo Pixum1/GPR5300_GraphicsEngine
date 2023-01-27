@@ -5,6 +5,8 @@
 #include "Helper.h"
 #include "Button2D.h"
 #include "TextureData.h"
+#include "SimpleMaterial.h"
+#include "TexturedMaterial.h"
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam);
 
@@ -50,18 +52,10 @@ int CGame::Initialize(HINSTANCE _hInstance)
 
 	CTM.Init();
 
-	returnValue = CreateSimpleShader();
-	if (FAILED(returnValue))
-	{
-		MessageBox(nullptr, L"Could not create Simple shader", L"Error", MB_OK);
-		return returnValue;
-	}
-	returnValue = CreateTexturedShader();
-	if (FAILED(returnValue))
-	{
-		MessageBox(nullptr, L"Could not create Textured shader", L"Error", MB_OK);
-		return returnValue;
-	}
+	// Create all materials
+	simpleMaterial = new CSimpleMaterial(m_directXSettings.m_device, m_directXSettings.m_deviceContext);
+	worldMapMaterial = new CTexturedMaterial(m_directXSettings.m_device, m_directXSettings.m_deviceContext, L"WorldMap.jpeg", WRAP, LINEAR);
+	happyMaterial = new CTexturedMaterial(m_directXSettings.m_device, m_directXSettings.m_deviceContext, L"test.png", WRAP, LINEAR);
 
 	returnValue = m_inputManager.InitDirectInput(_hInstance);
 	if (FAILED(returnValue))
@@ -117,15 +111,9 @@ void CGame::Finalize()
 void CGame::SwitchRasterizerState()
 {
 	if (m_directXSettings.m_currentRasterrizerState == m_directXSettings.m_rasterrizerStateSolid)
-	{
 		m_directXSettings.m_currentRasterrizerState = m_directXSettings.m_rasterrizerStateWireframe;
-	}
 	else
-	{
 		m_directXSettings.m_currentRasterrizerState = m_directXSettings.m_rasterrizerStateSolid;
-
-	}
-
 }
 
 int CGame::InitApplication(HINSTANCE _hInstance)
@@ -368,161 +356,6 @@ int CGame::InitConstantBuffers()
 	return 0;
 }
 
-int CGame::CreateSimpleShader()
-{
-	ID3DBlob* shaderBlob;
-
-#if _DEBUG
-	LPCWSTR compiledShaderName = L"SimpleVertexShader_d.cso";
-#else
-	LPCWSTR compiledShaderName = L"SimpleVertexShader.cso";
-#endif
-
-	HRESULT hr = D3DReadFileToBlob(compiledShaderName, &shaderBlob);
-	FAILHR(-50);
-
-	hr = m_directXSettings.m_device->CreateVertexShader(shaderBlob->GetBufferPointer(),
-		shaderBlob->GetBufferSize(), nullptr, &m_directXSettings.m_simpleVertexShader);
-	FAILHR(-51);
-
-	D3D11_INPUT_ELEMENT_DESC vertexLayoutDesc[] =
-	{
-		{
-			"POSITION",						// Semantic - Identifikation im Shader
-			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
-			DXGI_FORMAT_R32G32B32_FLOAT,	// Float3
-			0,								// Falls mehr als ein VertexShader vorhanden ist
-			offsetof(SVertexPosColor, Position),
-			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
-			0
-		},
-		{
-			"NORMAL",						// Semantic - Identifikation im Shader
-			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
-			DXGI_FORMAT_R32G32B32_FLOAT,	// Float3
-			0,								// Falls mehr als ein VertexShader vorhanden ist
-			offsetof(SVertexPosColor, Normal),
-			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
-			0
-		},
-		{
-			"COLOR",						// Semantic - Identifikation im Shader
-			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
-			DXGI_FORMAT_R32G32B32A32_FLOAT,	// Float4
-			0,								// Falls mehr als ein VertexShader vorhanden ist
-			offsetof(SVertexPosColor, Color),
-			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
-			0
-		}
-	};
-
-	hr = m_directXSettings.m_device->CreateInputLayout(vertexLayoutDesc,
-		_countof(vertexLayoutDesc),
-		shaderBlob->GetBufferPointer(),
-		shaderBlob->GetBufferSize(),
-		&m_directXSettings.m_simpleInputLayout);
-	FAILHR(-52);
-
-
-#if _DEBUG
-	compiledShaderName = L"SimplePixelShader_d.cso";
-#else
-	compiledShaderName = L"SimplePixelShader.cso";
-#endif
-	hr = D3DReadFileToBlob(compiledShaderName, &shaderBlob);
-	FAILHR(-53);
-
-	hr = m_directXSettings.m_device->CreatePixelShader(shaderBlob->GetBufferPointer(),
-		shaderBlob->GetBufferSize(),
-		nullptr,
-		&m_directXSettings.m_simplePixelShader);
-	FAILHR(-54);
-
-	return 0;
-}
-
-int CGame::CreateTexturedShader()
-{
-	ID3DBlob* shaderBlob;
-
-#if _DEBUG
-	LPCWSTR compiledShaderName = L"TexturedVertexShader_d.cso";
-#else
-	LPCWSTR compiledShaderName = L"TexturedVertexShader.cso";
-#endif
-
-	HRESULT hr = D3DReadFileToBlob(compiledShaderName, &shaderBlob);
-	FAILHR(-55);
-
-	hr = m_directXSettings.m_device->CreateVertexShader(shaderBlob->GetBufferPointer(),
-		shaderBlob->GetBufferSize(), nullptr, &m_directXSettings.m_texturedVertexShader);
-	FAILHR(-56);
-
-	D3D11_INPUT_ELEMENT_DESC vertexLayoutDesc[] =
-	{
-		{
-			"POSITION",						// Semantic - Identifikation im Shader
-			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
-			DXGI_FORMAT_R32G32B32_FLOAT,	// Float3
-			0,								// Falls mehr als ein VertexShader vorhanden ist
-			offsetof(SVertexPosColor, Position),
-			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
-			0
-		},
-		{
-			"NORMAL",						// Semantic - Identifikation im Shader
-			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
-			DXGI_FORMAT_R32G32B32_FLOAT,	// Float3
-			0,								// Falls mehr als ein VertexShader vorhanden ist
-			offsetof(SVertexPosColor, Normal),
-			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
-			0
-		},
-		{
-			"COLOR",						// Semantic - Identifikation im Shader
-			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
-			DXGI_FORMAT_R32G32B32A32_FLOAT,	// Float4
-			0,								// Falls mehr als ein VertexShader vorhanden ist
-			offsetof(SVertexPosColor, Color),
-			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
-			0
-		},
-		{
-			"TEXCOORD",						// Semantic - Identifikation im Shader
-			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
-			DXGI_FORMAT_R32G32_FLOAT,		// Float2
-			0,								// Falls mehr als ein VertexShader vorhanden ist
-			offsetof(SVertexPosColor, UV),
-			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
-			0
-		}
-	};
-
-	hr = m_directXSettings.m_device->CreateInputLayout(vertexLayoutDesc,
-		_countof(vertexLayoutDesc),
-		shaderBlob->GetBufferPointer(),
-		shaderBlob->GetBufferSize(),
-		&m_directXSettings.m_texturedInputLayout);
-	FAILHR(-57);
-
-
-#if _DEBUG
-	compiledShaderName = L"TexturedPixelShader_d.cso";
-#else
-	compiledShaderName = L"TexturedPixelShader.cso";
-#endif
-	hr = D3DReadFileToBlob(compiledShaderName, &shaderBlob);
-	FAILHR(-58);
-
-	hr = m_directXSettings.m_device->CreatePixelShader(shaderBlob->GetBufferPointer(),
-		shaderBlob->GetBufferSize(),
-		nullptr,
-		&m_directXSettings.m_texturedPixelShader);
-	FAILHR(-59);
-
-	return 0;
-}
-
 void CGame::ClearBackBuffer(const float _clearColor[4], float _clearDepth, UINT8 _clearStencil)
 {
 	m_directXSettings.m_deviceContext->ClearRenderTargetView(m_directXSettings.m_renderTargetView,
@@ -532,8 +365,6 @@ void CGame::ClearBackBuffer(const float _clearColor[4], float _clearDepth, UINT8
 		_clearDepth,
 		_clearStencil);
 }
-
-
 
 void CGame::Render()
 {
@@ -569,7 +400,7 @@ void CGame::Render()
 	m_directXSettings.m_swapChain->Present(1, 0);
 }
 
-void ClickTest(CButton2D* _caller) 
+void ClickTest(CButton2D* _caller)
 {
 	CTM.RemoveEntity(_caller);
 }
@@ -579,34 +410,27 @@ int CGame::LoadLevel()
 	// Cube
 	CEntity* CubeObject = new CEntity(XMFLOAT3(0, 0, 0));
 	SHC.CreateCube(CubeObject->AddComponent<CMesh>(), XMFLOAT4(0.33f, 0.69f, 0.33f, 1.0f));
-
+	CubeObject->GetComponent<CMesh>()->SetMaterial(simpleMaterial);
 	CTM.AddEntity(CubeObject);			// !IMPORTANT! Add Entity to Content Manager
 
 	// Oktaeder
 	CEntity* OktaederObject = new CEntity(XMFLOAT3(-2, 0, 0));
 	SHC.CreateOktaeder(OktaederObject->AddComponent<CMesh>(), XMFLOAT4(0.79f, 0.57f, 0.66f, 1.0f));
-
+	OktaederObject->GetComponent<CMesh>()->SetMaterial(simpleMaterial);
 	CTM.AddEntity(OktaederObject);		// !IMPORTANT! Add Entity to Content Manager
 
 	// Sphere
-	for (int i = 0; i < 20; i++)
-	{
-		CEntity* SphereObject = new CEntity(XMFLOAT3(i - 9.5f, 2, 0));
-		SHC.CreateSphere(SphereObject->AddComponent<CMesh>(), 40, 40);
-		SphereObject->GetComponent<CMesh>()->AddTexture(L"WorldMap.jpeg", WRAP, LINEAR);
-
-		CTM.AddEntity(SphereObject);	// !IMPORTANT! Add Entity to Content Manager
-	}
-
+	CEntity* SphereObject = new CEntity(XMFLOAT3(2, 0, 0));
+	SHC.CreateSphere(SphereObject->AddComponent<CMesh>(), 40, 40);
+	SphereObject->GetComponent<CMesh>()->SetMaterial(worldMapMaterial);
+	CTM.AddEntity(SphereObject);	// !IMPORTANT! Add Entity to Content Manager
 
 	CEntity* TexturedPlane = new CEntity(XMFLOAT3(0, -2, 0));
 	SHC.CreatePlane(TexturedPlane->AddComponent<CMesh>());
-	TexturedPlane->GetComponent<CMesh>()->AddTexture(L"test.png", WRAP, LINEAR);
-
+	TexturedPlane->GetComponent<CMesh>()->SetMaterial(happyMaterial);
 	CTM.AddEntity(TexturedPlane);		// !IMPORTANT! Add Entity to Content Manager
 
-
-	CTM.AddEntity(new CButton2D(XMFLOAT2(m_windowSettings.m_WindowWidth - 512, 0), L"Button.png", ClickTest));
+	// CTM.AddEntity(new CButton2D(XMFLOAT2(m_windowSettings.m_WindowWidth - 512, 0), L"Button.png", ClickTest));
 
 	return 0;
 }

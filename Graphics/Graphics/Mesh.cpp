@@ -1,6 +1,8 @@
 #include "GraphicsPCH.h"
 #include "Game.h"
 #include "Mesh.h"
+#include "Material.h"
+
 
 bool CMesh::Init(ID3D11Device* _p_device, ID3D11DeviceContext* _p_devicecontext)
 {
@@ -48,84 +50,41 @@ bool CMesh::DeInit()
 
 void CMesh::Render()
 {
-	if (m_usesTexture)
-	{
-		m_objectConstantBuffer.m_matrix = p_Entity->p_transform->WorldMatrix;
+	m_objectConstantBuffer.m_matrix = p_Entity->p_transform->WorldMatrix;
 
-		DXS.m_deviceContext->UpdateSubresource(DXS.m_constantBuffers[CB_OBJECT],
-			0, nullptr, &m_objectConstantBuffer, 0, 0);
+	DXS.m_deviceContext->UpdateSubresource(DXS.m_constantBuffers[CB_OBJECT],
+		0, nullptr, &m_objectConstantBuffer, 0, 0);
 
-		unsigned int offset = 0;
-		unsigned int stride = sizeof(SVertexPosColor);
+	unsigned int offset = 0;
+	unsigned int stride = sizeof(SVertexPosColor);
 
-		// Input Assembler
-		DXS.m_deviceContext->IASetInputLayout(DXS.m_texturedInputLayout);
-		DXS.m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		DXS.m_deviceContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &stride, &offset);
-		DXS.m_deviceContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R16_UINT, offset);
+	if (p_material == nullptr) return;
 
-		// Vertex Shader
-		DXS.m_deviceContext->VSSetConstantBuffers(0, 3, DXS.m_constantBuffers);
-		DXS.m_deviceContext->VSSetShader(DXS.m_texturedVertexShader, nullptr, 0);
+	// Input Assembler
+	DXS.m_deviceContext->IASetInputLayout(p_material->p_inputLayout);
+	DXS.m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	DXS.m_deviceContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &stride, &offset);
+	DXS.m_deviceContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R16_UINT, offset);
 
-		// Rasterizer
-		DXS.m_deviceContext->RSSetState(DXS.m_currentRasterrizerState);
-		DXS.m_deviceContext->RSSetViewports(1, &DXS.m_viewPort);
+	// Vertex Shader
+	DXS.m_deviceContext->VSSetConstantBuffers(0, 3, DXS.m_constantBuffers);
 
-		// Pixel Shader
-		DXS.m_deviceContext->PSSetConstantBuffers(0, 1, &DXS.m_constantBuffers[CB_LIGHT]);
-		DXS.m_deviceContext->PSSetShader(DXS.m_texturedPixelShader, nullptr, 0);
-		DXS.m_deviceContext->PSSetSamplers(0, 1, &m_textureData->m_textureSampler);
-		DXS.m_deviceContext->PSSetShaderResources(0, 1, &m_textureData->m_shaderResourceView);
+	// Rasterizer
+	DXS.m_deviceContext->RSSetState(DXS.m_currentRasterrizerState);
+	DXS.m_deviceContext->RSSetViewports(1, &DXS.m_viewPort);
 
-		// Output Merger
-		DXS.m_deviceContext->OMSetRenderTargets(1, &DXS.m_renderTargetView, DXS.m_depthStencilView);
-		DXS.m_deviceContext->OMSetDepthStencilState(DXS.m_depthStencilState, 1);
+	// Pixel Shader
+	DXS.m_deviceContext->PSSetConstantBuffers(0, 1, &DXS.m_constantBuffers[CB_LIGHT]);
 
-		// Objekt zeichnen
-		DXS.m_deviceContext->DrawIndexed(m_indexCount, 0, 0);
-	}
-	else
-	{
-		m_objectConstantBuffer.m_matrix = p_Entity->p_transform->WorldMatrix;
+	// Output Merger
+	DXS.m_deviceContext->OMSetRenderTargets(1, &DXS.m_renderTargetView, DXS.m_depthStencilView);
+	DXS.m_deviceContext->OMSetDepthStencilState(DXS.m_depthStencilState, 1);
 
-		DXS.m_deviceContext->UpdateSubresource(DXS.m_constantBuffers[CB_OBJECT],
-			0, nullptr, &m_objectConstantBuffer, 0, 0);
-
-		unsigned int offset = 0;
-		unsigned int stride = sizeof(SVertexPosColor);
-
-		// Input Assembler
-		DXS.m_deviceContext->IASetInputLayout(DXS.m_simpleInputLayout);
-		DXS.m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		DXS.m_deviceContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &stride, &offset);
-		DXS.m_deviceContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R16_UINT, offset);
-
-		// Vertex Shader
-		DXS.m_deviceContext->VSSetConstantBuffers(0, 3, DXS.m_constantBuffers);
-		DXS.m_deviceContext->VSSetShader(DXS.m_simpleVertexShader, nullptr, 0);
-
-		// Rasterizer
-		DXS.m_deviceContext->RSSetState(DXS.m_currentRasterrizerState);
-		DXS.m_deviceContext->RSSetViewports(1, &DXS.m_viewPort);
-
-		// Pixel Shader
-		DXS.m_deviceContext->PSSetConstantBuffers(0, 1, &DXS.m_constantBuffers[CB_LIGHT]);
-		DXS.m_deviceContext->PSSetShader(DXS.m_simplePixelShader, nullptr, 0);
-
-		// Output Merger
-		DXS.m_deviceContext->OMSetRenderTargets(1, &DXS.m_renderTargetView, DXS.m_depthStencilView);
-		DXS.m_deviceContext->OMSetDepthStencilState(DXS.m_depthStencilState, 1);
-
-		// Objekt zeichnen
-		DXS.m_deviceContext->DrawIndexed(m_indexCount, 0, 0);
-	}
+	// Objekt zeichnen
+	DXS.m_deviceContext->DrawIndexed(m_indexCount, 0, 0);
 }
 
-int CMesh::AddTexture(LPCWSTR _fileName, D3D11_TEXTURE_ADDRESS_MODE _sampleMode, D3D11_FILTER _filter)
+void CMesh::SetMaterial(CMaterial* _mat)
 {
-	m_textureData = ASM.LoadTexture(_fileName, _sampleMode, _filter);
-	m_usesTexture = true;
-
-	return 0;
+	p_material = _mat;
 }
