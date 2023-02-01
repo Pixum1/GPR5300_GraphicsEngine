@@ -18,5 +18,4 @@ struct SLightConstantBuffer
 
 	XMFLOAT3 CameraPos;
 	float CameraPosPadding;
-
 };

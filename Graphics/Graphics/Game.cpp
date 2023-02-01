@@ -2,11 +2,8 @@
 #include "Game.h"
 #include "Mesh.h"
 #include "Component.h"
-#include "Helper.h"
-#include "Button2D.h"
-#include "TextureData.h"
-#include "SimpleMaterial.h"
-#include "TexturedMaterial.h"
+#include "MathHelper.h"
+#include "Material.h"
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam);
 
@@ -53,9 +50,15 @@ int CGame::Initialize(HINSTANCE _hInstance)
 	CTM.Init();
 
 	// Create all materials
-	simpleMaterial = new CSimpleMaterial(m_directXSettings.m_device, m_directXSettings.m_deviceContext);
-	worldMapMaterial = new CTexturedMaterial(m_directXSettings.m_device, m_directXSettings.m_deviceContext, L"Assets\\WorldMap.jpeg", WRAP, LINEAR);
-	happyMaterial = new CTexturedMaterial(m_directXSettings.m_device, m_directXSettings.m_deviceContext, L"Assets\\test.png", WRAP, LINEAR);
+	p_simpleMaterial = new CMaterial(L"SimplePixelShader.cso", L"SimpleVertexShader.cso");
+	p_worldMapMaterial = new CMaterial(L"TexturedPixelShader.cso", L"TexturedVertexShader.cso");
+	p_happyMaterial = new CMaterial(L"TexturedPixelShader.cso", L"TexturedVertexShader.cso");
+	p_skyboxMaterial = new CMaterial(L"SkyboxPixelShader.cso", L"SkyboxVertexShader.cso");
+
+	p_simpleMaterial->Init(m_directXSettings.m_device, m_directXSettings.m_deviceContext);
+	p_worldMapMaterial->Init(m_directXSettings.m_device, m_directXSettings.m_deviceContext, L"..\\Assets\\WorldMap.jpeg");
+	p_happyMaterial->Init(m_directXSettings.m_device, m_directXSettings.m_deviceContext, L"..\\Assets\\test.png");
+	p_skyboxMaterial->Init(m_directXSettings.m_device, m_directXSettings.m_deviceContext, L"..\\Assets\\Skybox.dds", true);
 
 	returnValue = m_inputManager.InitDirectInput(_hInstance);
 	if (FAILED(returnValue))
@@ -119,7 +122,6 @@ void CGame::SwitchRasterizerState()
 int CGame::InitApplication(HINSTANCE _hInstance)
 {
 	WNDCLASSEX wndClass = { 0 };
-	//ZeroMemory(&wndClass, sizeof(WNDCLASSEX)); // oldschool weg um Speicher zu leeren
 
 	wndClass.cbSize = sizeof(WNDCLASSEX);
 	wndClass.style = CS_HREDRAW | CS_VREDRAW;
@@ -181,7 +183,6 @@ int CGame::InitDirectX()
 	swapChainDesc.SampleDesc.Quality = 0;
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	swapChainDesc.Windowed = true;
-
 
 	unsigned int createDeviceFlags = 0;
 
@@ -266,7 +267,7 @@ int CGame::InitDirectX()
 
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc = { 0 };
 	depthStencilDesc.DepthEnable = true;
-	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;		// Nahe Objekte nehmen, ferne wegwerfen
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;		// Nahe Objekte nehmen, ferne wegwerfen
 	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	depthStencilDesc.StencilEnable = false;
 
@@ -281,7 +282,7 @@ int CGame::InitDirectX()
 	ZeroMemory(&rasterdesc, sizeof(D3D11_RASTERIZER_DESC));
 	rasterdesc.AntialiasedLineEnable = false;
 	rasterdesc.FillMode = D3D11_FILL_SOLID;		// Komplette Dreiecke zeigen, rumspielen!
-	rasterdesc.CullMode = D3D11_CULL_BACK;		// Rückseiten wegschneiden
+	rasterdesc.CullMode = D3D11_CULL_NONE;		// Rückseiten wegschneiden
 	rasterdesc.DepthBias = 0;
 	rasterdesc.DepthBiasClamp = 0.0f;
 	rasterdesc.DepthClipEnable = true;
@@ -349,9 +350,6 @@ int CGame::InitConstantBuffers()
 		0, nullptr, &m_applicationConstantBuffer, 0, 0);
 
 	m_camPos = XMFLOAT3(0, 0, -5);
-	//m_camPos = XMFLOAT3(0, 5, -5);
-	//m_camRot = XMFLOAT3(45, 0, 0);
-
 
 	return 0;
 }
@@ -375,7 +373,8 @@ void CGame::Render()
 	// Backbuffer clear
 	ClearBackBuffer(Colors::Navy, 1.0f, 0);
 
-	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(XMConvertToRadians(m_camRot.x),
+	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(
+		XMConvertToRadians(m_camRot.x),
 		XMConvertToRadians(m_camRot.y),
 		XMConvertToRadians(m_camRot.z));
 
@@ -400,37 +399,36 @@ void CGame::Render()
 	m_directXSettings.m_swapChain->Present(1, 0);
 }
 
-void ClickTest(CButton2D* _caller)
-{
-	CTM.RemoveEntity(_caller);
-}
-
 int CGame::LoadLevel()
 {
+	//// Skybox
+	//CEntity* SkyboxObject = new CEntity(XMFLOAT3(0, 0, -5));
+	//SHC.CreateSphere(SkyboxObject->AddComponent<CMesh>(), 40, 40);
+	//SkyboxObject->GetComponent<CMesh>()->SetMaterial(p_skyboxMaterial);
+	//CTM.AddEntity(SkyboxObject);		// !IMPORTANT! Add Entity to Content Manager
+
 	// Cube
 	CEntity* CubeObject = new CEntity(XMFLOAT3(0, 0, 0));
 	SHC.CreateCube(CubeObject->AddComponent<CMesh>(), XMFLOAT4(0.33f, 0.69f, 0.33f, 1.0f));
-	CubeObject->GetComponent<CMesh>()->SetMaterial(simpleMaterial);
+	CubeObject->GetComponent<CMesh>()->SetMaterial(p_simpleMaterial);
 	CTM.AddEntity(CubeObject);			// !IMPORTANT! Add Entity to Content Manager
 
 	// Oktaeder
 	CEntity* OktaederObject = new CEntity(XMFLOAT3(-2, 0, 0));
 	SHC.CreateOktaeder(OktaederObject->AddComponent<CMesh>(), XMFLOAT4(0.79f, 0.57f, 0.66f, 1.0f));
-	OktaederObject->GetComponent<CMesh>()->SetMaterial(simpleMaterial);
+	OktaederObject->GetComponent<CMesh>()->SetMaterial(p_simpleMaterial);
 	CTM.AddEntity(OktaederObject);		// !IMPORTANT! Add Entity to Content Manager
 
 	// Sphere
 	CEntity* SphereObject = new CEntity(XMFLOAT3(2, 0, 0));
 	SHC.CreateSphere(SphereObject->AddComponent<CMesh>(), 40, 40);
-	SphereObject->GetComponent<CMesh>()->SetMaterial(worldMapMaterial);
-	CTM.AddEntity(SphereObject);	// !IMPORTANT! Add Entity to Content Manager
+	SphereObject->GetComponent<CMesh>()->SetMaterial(p_worldMapMaterial);
+	CTM.AddEntity(SphereObject);		// !IMPORTANT! Add Entity to Content Manager
 
 	CEntity* TexturedPlane = new CEntity(XMFLOAT3(0, -2, 0));
 	SHC.CreatePlane(TexturedPlane->AddComponent<CMesh>());
-	TexturedPlane->GetComponent<CMesh>()->SetMaterial(happyMaterial);
+	TexturedPlane->GetComponent<CMesh>()->SetMaterial(p_happyMaterial);
 	CTM.AddEntity(TexturedPlane);		// !IMPORTANT! Add Entity to Content Manager
-
-	// CTM.AddEntity(new CButton2D(XMFLOAT2(m_windowSettings.m_WindowWidth - 512, 0), L"Assets\\Button.png", ClickTest));
 
 	return 0;
 }

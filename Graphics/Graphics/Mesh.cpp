@@ -59,9 +59,9 @@ void CMesh::Render()
 	unsigned int stride = sizeof(SVertexPosColor);
 
 	if (p_material == nullptr) return;
+	p_material->Render();
 
 	// Input Assembler
-	DXS.m_deviceContext->IASetInputLayout(p_material->p_inputLayout);
 	DXS.m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	DXS.m_deviceContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &stride, &offset);
 	DXS.m_deviceContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R16_UINT, offset);
@@ -82,9 +82,12 @@ void CMesh::Render()
 
 	// Objekt zeichnen
 	DXS.m_deviceContext->DrawIndexed(m_indexCount, 0, 0);
+
 }
 
 void CMesh::SetMaterial(CMaterial* _mat)
 {
 	p_material = _mat;
+
+	p_material->Init(DXS.m_device, DXS.m_deviceContext);
 }

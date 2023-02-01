@@ -2,7 +2,7 @@
 #include "Entity.h"
 #include "Game.h"
 #include "Component.h"
-#include "Helper.h"
+#include "MathHelper.h"
 
 CEntity::CEntity(XMFLOAT3 _pos, XMFLOAT3 _rot)
 {

@@ -2,7 +2,6 @@
 #include "VertexPosColor.h"
 #include "ConstantBuffer.h"
 #include "Component.h"
-#include "TextureData.h"
 
 class CMaterial;
 

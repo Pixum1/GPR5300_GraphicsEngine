@@ -5,6 +5,7 @@
 
 // DirectX
 #include <d3d11.h>			// Hauptheaderfile
+#include <D3DX11.h>
 #include <d3dcompiler.h>	// Läd und kompiliert Shader
 #include <DirectXMath.h>	// Matrix- und Vektormathe
 #include <DirectXColors.h>	// Liefert schöne Farben!

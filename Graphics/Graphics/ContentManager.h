@@ -1,7 +1,5 @@
 #pragma once
 #include "Entity.h"
-#include "Entity2D.h"
-#include "Cursor.h"
 #include <list>
 
 class CContentManager
@@ -18,10 +16,6 @@ public:
 	bool RemoveEntity(CEntity* _entity);
 	bool ContainsEntity(CEntity* _entity);
 
-	bool AddEntity(CEntity2D* _entity);
-	bool RemoveEntity(CEntity2D* _entity);
-	bool ContainsEntity(CEntity2D* _entity);
-
 public:
 	bool Rotate;
 	bool Move;
@@ -35,10 +29,5 @@ private:
 
 	std::list<CEntity*> m_entities;
 	std::list<CEntity*> m_entitiesToDelete;
-
-	std::list<CEntity2D*> m_entities2D;
-	std::list<CEntity2D*> m_entities2DToDelete;
-
-	CCursor* m_cursor;
 };
 
