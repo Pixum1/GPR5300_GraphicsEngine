@@ -1,8 +1,8 @@
-#include "GraphicsPCH.h"
-#include "Entity.h"
-#include "Game.h"
-#include "Component.h"
-#include "MathHelper.h"
+#include "../../header-files/misc/GraphicsPCH.h"
+#include "../../header-files/gameobjects/Entity.h"
+#include "../../header-files/Game.h"
+#include "../../header-files/gameobjects/components/Component.h"
+#include "../../header-files/misc/MathHelper.h"
 
 CEntity::CEntity(XMFLOAT3 _pos, XMFLOAT3 _rot)
 {

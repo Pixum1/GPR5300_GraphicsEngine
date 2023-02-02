@@ -1,6 +1,6 @@
 #pragma once
-#include "GraphicsPCH.h"
-#include "Game.h"
+#include "../../misc/GraphicsPCH.h"
+#include "../../Game.h"
 
 class STextureData;
 class CTexture;

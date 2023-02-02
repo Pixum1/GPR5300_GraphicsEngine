@@ -146,39 +146,39 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Component.cpp" />
-    <ClCompile Include="ContentManager.cpp" />
-    <ClCompile Include="Cubemap.cpp" />
-    <ClCompile Include="Material.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="InputManager.cpp" />
-    <ClCompile Include="ShapeCreator.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="Entity.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Transform2D.cpp" />
+    <ClCompile Include="project\cpp-files\gameobjects\components\Component.cpp" />
+    <ClCompile Include="project\cpp-files\manager\ContentManager.cpp" />
+    <ClCompile Include="project\cpp-files\gameobjects\materials\Cubemap.cpp" />
+    <ClCompile Include="project\cpp-files\gameobjects\materials\Material.cpp" />
+    <ClCompile Include="project\cpp-files\gameobjects\components\Mesh.cpp" />
+    <ClCompile Include="project\cpp-files\manager\InputManager.cpp" />
+    <ClCompile Include="project\cpp-files\manager\ShapeCreator.cpp" />
+    <ClCompile Include="project\cpp-files\gameobjects\materials\Texture.cpp" />
+    <ClCompile Include="project\cpp-files\gameobjects\Transform.cpp" />
+    <ClCompile Include="project\cpp-files\gameobjects\Entity.cpp" />
+    <ClCompile Include="project\cpp-files\Game.cpp" />
+    <ClCompile Include="project\cpp-files\main.cpp" />
+    <ClCompile Include="project\cpp-files\gameobjects\Transform2D.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Component.h" />
-    <ClInclude Include="ContentManager.h" />
-    <ClInclude Include="Cubemap.h" />
-    <ClInclude Include="Entity.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="InputManager.h" />
-    <ClInclude Include="ShapeCreator.h" />
-    <ClInclude Include="MathHelper.h" />
-    <ClInclude Include="Material.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="ConstantBuffer.h" />
-    <ClInclude Include="VertexPosColor.h" />
-    <ClInclude Include="DirectXSettings.h" />
-    <ClInclude Include="WindowSettings.h" />
-    <ClInclude Include="GraphicsPCH.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="Transform.h" />
-    <ClInclude Include="Transform2D.h" />
+    <ClInclude Include="project\header-files\gameobjects\components\Component.h" />
+    <ClInclude Include="project\header-files\manager\ContentManager.h" />
+    <ClInclude Include="project\header-files\gameobjects\materials\Cubemap.h" />
+    <ClInclude Include="project\header-files\gameobjects\Entity.h" />
+    <ClInclude Include="project\header-files\Game.h" />
+    <ClInclude Include="project\header-files\manager\InputManager.h" />
+    <ClInclude Include="project\header-files\manager\ShapeCreator.h" />
+    <ClInclude Include="project\header-files\misc\MathHelper.h" />
+    <ClInclude Include="project\header-files\gameobjects\materials\Material.h" />
+    <ClInclude Include="project\header-files\gameobjects\components\Mesh.h" />
+    <ClInclude Include="project\header-files\misc\ConstantBuffer.h" />
+    <ClInclude Include="project\header-files\misc\VertexPosColor.h" />
+    <ClInclude Include="project\header-files\settings\DirectXSettings.h" />
+    <ClInclude Include="project\header-files\settings\WindowSettings.h" />
+    <ClInclude Include="project\header-files\misc\GraphicsPCH.h" />
+    <ClInclude Include="project\header-files\gameobjects\materials\Texture.h" />
+    <ClInclude Include="project\header-files\gameobjects\Transform.h" />
+    <ClInclude Include="project\header-files\gameobjects\Transform2D.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\SimplePixelShader.hlsl">

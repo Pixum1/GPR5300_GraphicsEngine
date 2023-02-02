@@ -1,5 +1,5 @@
 #pragma once
-#include "GraphicsPCH.h"
+#include "../misc/GraphicsPCH.h"
 
 class CTransform
 {

@@ -1,5 +1,5 @@
-#include "Texture.h"
-#include "Game.h"
+#include "../../../header-files/gameobjects/materials/Texture.h"
+#include "../../../header-files/Game.h"
 
 int CTexture::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
 {

@@ -1,9 +1,9 @@
-#include "GraphicsPCH.h"
-#include "Game.h"
-#include "Mesh.h"
-#include "Component.h"
-#include "MathHelper.h"
-#include "Material.h"
+#include "../header-files/misc/GraphicsPCH.h"
+#include "../header-files/Game.h"
+#include "../header-files/gameobjects/components/Mesh.h"
+#include "../header-files/gameobjects/components/Component.h"
+#include "../header-files/misc/MathHelper.h"
+#include "../header-files/gameobjects/materials/Material.h"
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam);
 

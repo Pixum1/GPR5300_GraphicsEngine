@@ -1,6 +1,6 @@
-#include "Material.h"
-#include "Texture.h"
-#include "Cubemap.h"
+#include "../../../header-files/gameobjects/materials/Material.h"
+#include "../../../header-files/gameobjects/materials/Texture.h"
+#include "../../../header-files/gameobjects/materials/Cubemap.h"
 
 int CMaterial::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
 {

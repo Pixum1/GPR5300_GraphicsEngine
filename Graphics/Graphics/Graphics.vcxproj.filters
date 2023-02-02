@@ -15,123 +15,51 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Scripts\main.cpp">
+    <ClCompile Include="project\cpp-files\gameobjects\components\Component.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Game.cpp">
+    <ClCompile Include="project\cpp-files\manager\ContentManager.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Entity.cpp">
+    <ClCompile Include="project\cpp-files\gameobjects\materials\Cubemap.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\ContentManager.cpp">
+    <ClCompile Include="project\cpp-files\gameobjects\materials\Material.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\InputManager.cpp">
+    <ClCompile Include="project\cpp-files\gameobjects\components\Mesh.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Transform.cpp">
+    <ClCompile Include="project\cpp-files\manager\InputManager.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Component.cpp">
+    <ClCompile Include="project\cpp-files\manager\ShapeCreator.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Mesh.cpp">
+    <ClCompile Include="project\cpp-files\gameobjects\materials\Texture.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\ShapeCreator.cpp">
+    <ClCompile Include="project\cpp-files\gameobjects\Transform.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Transform2D.cpp">
+    <ClCompile Include="project\cpp-files\gameobjects\Entity.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Material.cpp">
+    <ClCompile Include="project\cpp-files\Game.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Texture.cpp">
+    <ClCompile Include="project\cpp-files\main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Scripts\Cubemap.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\manager\ContentManager.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\manager\InputManager.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Scripts\manager\ShapeCreator.cpp">
+    <ClCompile Include="project\cpp-files\gameobjects\Transform2D.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Scripts\GraphicsPCH.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Game.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\WindowSettings.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\DirectXSettings.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\ConstantBuffer.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Entity.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\VertexPosColor.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\ContentManager.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\InputManager.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Transform.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Component.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Mesh.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\ShapeCreator.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\MathHelper.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Transform2D.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Material.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Texture.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\Cubemap.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\manager\ContentManager.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\manager\InputManager.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Scripts\ShapeCreator.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\ConstantBuffer.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\misc\MathHelper.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\VertexPosColor.h">
@@ -141,6 +69,60 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\WindowSettings.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="project\header-files\gameobjects\components\Component.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="project\header-files\manager\ContentManager.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="project\header-files\gameobjects\materials\Cubemap.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="project\header-files\gameobjects\Entity.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="project\header-files\Game.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="project\header-files\manager\InputManager.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="project\header-files\manager\ShapeCreator.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="project\header-files\misc\MathHelper.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="project\header-files\gameobjects\materials\Material.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="project\header-files\gameobjects\components\Mesh.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="project\header-files\misc\ConstantBuffer.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="project\header-files\misc\VertexPosColor.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="project\header-files\settings\DirectXSettings.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="project\header-files\settings\WindowSettings.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="project\header-files\misc\GraphicsPCH.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="project\header-files\gameobjects\materials\Texture.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="project\header-files\gameobjects\Transform.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="project\header-files\gameobjects\Transform2D.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

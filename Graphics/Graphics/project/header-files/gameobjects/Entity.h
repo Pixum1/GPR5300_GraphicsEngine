@@ -1,8 +1,8 @@
 #pragma once
 #include <vector>
 
-#include "VertexPosColor.h"
-#include "ConstantBuffer.h"
+#include "../misc/VertexPosColor.h"
+#include "../misc/ConstantBuffer.h"
 #include "Transform.h"
 
 class CComponent;

@@ -1,7 +1,7 @@
-#include "GraphicsPCH.h"
-#include "Game.h"
-#include "Mesh.h"
-#include "Material.h"
+#include "../../../header-files/misc/GraphicsPCH.h"
+#include "../../../header-files/Game.h"
+#include "../../../header-files/gameobjects/components/Mesh.h"
+#include "../../../header-files/gameobjects/materials/Material.h"
 
 
 bool CMesh::Init(ID3D11Device* _p_device, ID3D11DeviceContext* _p_devicecontext)

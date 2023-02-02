@@ -1,5 +1,5 @@
 #pragma once
-#include "Entity.h"
+#include "../gameobjects/Entity.h"
 #include <list>
 
 class CContentManager

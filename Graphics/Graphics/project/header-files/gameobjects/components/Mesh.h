@@ -1,6 +1,6 @@
 #pragma once
-#include "VertexPosColor.h"
-#include "ConstantBuffer.h"
+#include "../../misc/VertexPosColor.h"
+#include "../../misc/ConstantBuffer.h"
 #include "Component.h"
 
 class CMaterial;

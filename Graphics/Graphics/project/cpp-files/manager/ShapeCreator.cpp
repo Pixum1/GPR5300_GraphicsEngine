@@ -1,5 +1,5 @@
-#include "GraphicsPCH.h"
-#include "ShapeCreator.h"
+#include "../../header-files/misc/GraphicsPCH.h"
+#include "../../header-files/manager/ShapeCreator.h"
 
 void CShapeCreator::CreateCube(CMesh* _p_mesh, XMFLOAT4 _color)
 {

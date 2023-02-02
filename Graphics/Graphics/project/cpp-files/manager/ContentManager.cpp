@@ -1,8 +1,8 @@
-#include "GraphicsPCH.h"
-#include "Game.h"
-#include "ContentManager.h"
-#include "Mesh.h"
-#include "Material.h"
+#include "../../header-files/misc/GraphicsPCH.h"
+#include "../../header-files/Game.h"
+#include "../../header-files/manager/ContentManager.h"
+#include "../../header-files/gameobjects/components/Mesh.h"
+#include "../../header-files/gameobjects/materials/Material.h"
 
 CContentManager::CContentManager()
 {

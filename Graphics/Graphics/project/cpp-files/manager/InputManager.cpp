@@ -1,6 +1,6 @@
-#include "GraphicsPCH.h"
-#include "InputManager.h"
-#include "Game.h"
+#include "../../header-files/misc/GraphicsPCH.h"
+#include "../../header-files/manager/InputManager.h"
+#include "../../header-files/Game.h"
 
 CInputManager::CInputManager()
 {

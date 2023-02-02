@@ -1,11 +1,11 @@
 #pragma once
-#include "WindowSettings.h"
-#include "DirectXSettings.h"
-#include "ConstantBuffer.h"
-#include "Entity.h"
-#include "ContentManager.h"
-#include "InputManager.h"
-#include "ShapeCreator.h"
+#include "settings/WindowSettings.h"
+#include "settings/DirectXSettings.h"
+#include "misc/ConstantBuffer.h"
+#include "gameobjects/Entity.h"
+#include "manager/ContentManager.h"
+#include "manager/InputManager.h"
+#include "manager/ShapeCreator.h"
 
 #define WDS (*(CGame::Get()->GetWindowSettings()))
 #define DXS (*(CGame::Get()->GetDirectXSettings()))

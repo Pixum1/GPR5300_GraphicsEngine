@@ -1,5 +1,5 @@
-#include "GraphicsPCH.h"
-#include "Game.h"
+#include "../header-files/misc/GraphicsPCH.h"
+#include "../header-files/Game.h"
 
 int WINAPI wWinMain(HINSTANCE _hInstance, HINSTANCE _prevHInstance, LPWSTR _cmdLineArgV, int _cmdLineArgC)
 {
