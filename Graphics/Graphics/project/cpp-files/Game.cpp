@@ -401,11 +401,11 @@ void CGame::Render()
 
 int CGame::LoadLevel()
 {
-	//// Skybox
-	//CEntity* SkyboxObject = new CEntity(XMFLOAT3(0, 0, -5));
-	//SHC.CreateSphere(SkyboxObject->AddComponent<CMesh>(), 40, 40);
-	//SkyboxObject->GetComponent<CMesh>()->SetMaterial(p_skyboxMaterial);
-	//CTM.AddEntity(SkyboxObject);		// !IMPORTANT! Add Entity to Content Manager
+	// Skybox
+	CEntity* SkyboxObject = new CEntity(XMFLOAT3(0, 0, 0));
+	SHC.CreateSphere(SkyboxObject->AddComponent<CMesh>(), 40, 40);
+	SkyboxObject->GetComponent<CMesh>()->SetMaterial(p_skyboxMaterial);
+	CTM.AddEntity(SkyboxObject);		// !IMPORTANT! Add Entity to Content Manager
 
 	// Cube
 	CEntity* CubeObject = new CEntity(XMFLOAT3(0, 0, 0));

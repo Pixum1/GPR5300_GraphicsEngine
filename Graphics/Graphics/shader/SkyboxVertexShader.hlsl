@@ -30,7 +30,7 @@ VertexShaderOutput main(VertexShaderInput INPUT )
     VertexShaderOutput OUT;
     matrix wvp = transpose(mul(mul(worldMatrix, viewMatrix), projectionMatrix));
 	
-    OUT.pos = mul(float4(INPUT.pos, 0.0f), wvp);
+    OUT.pos = mul(float4(INPUT.pos, 1.0f), wvp).xyww; //Set Pos to xyww instead of xyzw, so that z will always be 1 (furthest from camera)
     OUT.uv = INPUT.pos;
 
     return OUT;

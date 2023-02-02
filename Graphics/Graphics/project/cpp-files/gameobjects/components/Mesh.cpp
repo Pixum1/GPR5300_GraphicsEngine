@@ -78,7 +78,7 @@ void CMesh::Render()
 
 	// Output Merger
 	DXS.m_deviceContext->OMSetRenderTargets(1, &DXS.m_renderTargetView, DXS.m_depthStencilView);
-	DXS.m_deviceContext->OMSetDepthStencilState(DXS.m_depthStencilState, 1);
+	DXS.m_deviceContext->OMSetDepthStencilState(DXS.m_depthStencilState, 0);
 
 	// Objekt zeichnen
 	DXS.m_deviceContext->DrawIndexed(m_indexCount, 0, 0);
