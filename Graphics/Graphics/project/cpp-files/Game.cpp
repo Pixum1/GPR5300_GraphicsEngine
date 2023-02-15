@@ -50,7 +50,7 @@ int CGame::Initialize(HINSTANCE _hInstance)
 	CTM.Init();
 
 	// Create all materials
-	p_simpleMaterial = new CMaterial(L"SimplePixelShader.cso", L"SimpleVertexShader.cso");
+	/*p_simpleMaterial = new CMaterial(L"SimplePixelShader.cso", L"SimpleVertexShader.cso");
 	p_worldMapMaterial = new CMaterial(L"TexturedPixelShader.cso", L"TexturedVertexShader.cso");
 	p_happyMaterial = new CMaterial(L"TexturedPixelShader.cso", L"TexturedVertexShader.cso");
 	p_skyboxMaterial = new CMaterial(L"SkyboxPixelShader.cso", L"SkyboxVertexShader.cso");
@@ -58,7 +58,7 @@ int CGame::Initialize(HINSTANCE _hInstance)
 	p_simpleMaterial->Init(m_directXSettings.m_device, m_directXSettings.m_deviceContext);
 	p_worldMapMaterial->Init(m_directXSettings.m_device, m_directXSettings.m_deviceContext, L"..\\Assets\\WorldMap.jpeg");
 	p_happyMaterial->Init(m_directXSettings.m_device, m_directXSettings.m_deviceContext, L"..\\Assets\\test.png");
-	p_skyboxMaterial->Init(m_directXSettings.m_device, m_directXSettings.m_deviceContext, L"..\\Assets\\Skybox.dds", true);
+	p_skyboxMaterial->Init(m_directXSettings.m_device, m_directXSettings.m_deviceContext, L"..\\Assets\\Skybox.dds", true);*/
 
 	returnValue = m_inputManager.InitDirectInput(_hInstance);
 	if (FAILED(returnValue))
@@ -269,7 +269,6 @@ int CGame::InitDirectX()
 	depthStencilDesc.DepthEnable = true;
 	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;		// Nahe Objekte nehmen, ferne wegwerfen
 	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	depthStencilDesc.StencilEnable = false;
 
 	hr = m_directXSettings.m_device->CreateDepthStencilState(&depthStencilDesc, &m_directXSettings.m_depthStencilState);
 	if (FAILED(hr))
@@ -340,14 +339,9 @@ int CGame::InitConstantBuffers()
 	float clientWidth = clientRect.right - clientRect.left;
 
 
-	m_applicationConstantBuffer.m_matrix = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(60),
-		clientWidth / clientHeight,
-		0.1f,
-		100.0f);
+	m_applicationConstantBuffer.m_matrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(60), clientWidth / clientHeight, 0.1f, 100.0f);
 
-	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_APPLICATION],
-		0, nullptr, &m_applicationConstantBuffer, 0, 0);
+	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_APPLICATION], 0, nullptr, &m_applicationConstantBuffer, 0, 0);
 
 	m_camPos = XMFLOAT3(0, 0, -5);
 
@@ -356,12 +350,8 @@ int CGame::InitConstantBuffers()
 
 void CGame::ClearBackBuffer(const float _clearColor[4], float _clearDepth, UINT8 _clearStencil)
 {
-	m_directXSettings.m_deviceContext->ClearRenderTargetView(m_directXSettings.m_renderTargetView,
-		_clearColor);
-	m_directXSettings.m_deviceContext->ClearDepthStencilView(m_directXSettings.m_depthStencilView,
-		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
-		_clearDepth,
-		_clearStencil);
+	m_directXSettings.m_deviceContext->ClearRenderTargetView(m_directXSettings.m_renderTargetView, _clearColor);
+	m_directXSettings.m_deviceContext->ClearDepthStencilView(m_directXSettings.m_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, _clearDepth, _clearStencil);
 }
 
 void CGame::Render()
@@ -373,6 +363,7 @@ void CGame::Render()
 	// Backbuffer clear
 	ClearBackBuffer(Colors::Navy, 1.0f, 0);
 
+#pragma region Update Frame ConstantBuffer
 	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(
 		XMConvertToRadians(m_camRot.x),
 		XMConvertToRadians(m_camRot.y),
@@ -382,17 +373,18 @@ void CGame::Render()
 
 	m_frameConstantBuffer.m_matrix = XMMatrixInverse(nullptr, XMMatrixMultiply(rotation, position));
 
-	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_FRAME],
-		0, nullptr, &m_frameConstantBuffer, 0, 0);
+	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_FRAME], 0, nullptr, &m_frameConstantBuffer, 0, 0);
+#pragma endregion
 
+#pragma region Update Light ConstantBuffer
 	m_lightConstantBuffer.AmbientColor = XMFLOAT4(0.25f, 0.25f, 0.25f, 1);
 	m_lightConstantBuffer.DiffuseColor = XMFLOAT4(0.8f, 0.8f, 0.8f, 1);
 	m_lightConstantBuffer.SpecularColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1);
 	m_lightConstantBuffer.CameraPos = m_camPos;
 	m_lightConstantBuffer.LightDir = XMFLOAT3(0.2f, -1.0f, 0.2f);
 
-	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_LIGHT],
-		0, nullptr, &m_lightConstantBuffer, 0, 0);
+	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_LIGHT], 0, nullptr, &m_lightConstantBuffer, 0, 0);
+#pragma endregion
 
 	m_contentManager.Render();
 
@@ -402,32 +394,42 @@ void CGame::Render()
 int CGame::LoadLevel()
 {
 	// Skybox
-	CEntity* SkyboxObject = new CEntity(XMFLOAT3(0, 0, 0));
-	SHC.CreateSphere(SkyboxObject->AddComponent<CMesh>(), 40, 40);
-	SkyboxObject->GetComponent<CMesh>()->SetMaterial(p_skyboxMaterial);
-	CTM.AddEntity(SkyboxObject);		// !IMPORTANT! Add Entity to Content Manager
+	p_skybox = new CEntity(XMFLOAT3(0, 0, 0));
+	SHC.CreateSphere(p_skybox->AddComponent<CMesh>(), 40, 40);
+	p_skybox->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
+		L"SkyboxPixelShader.cso", L"SkyboxVertexShader.cso", L"..\\Assets\\Skybox.dds", true));
+	CTM.AddEntity(p_skybox);
 
 	// Cube
 	CEntity* CubeObject = new CEntity(XMFLOAT3(0, 0, 0));
 	SHC.CreateCube(CubeObject->AddComponent<CMesh>(), XMFLOAT4(0.33f, 0.69f, 0.33f, 1.0f));
-	CubeObject->GetComponent<CMesh>()->SetMaterial(p_simpleMaterial);
+	CubeObject->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
+		L"SimplePixelShader.cso", L"SimpleVertexShader.cso", L"..\\assets\\DefaultTexture.png", false));
+
 	CTM.AddEntity(CubeObject);			// !IMPORTANT! Add Entity to Content Manager
 
 	// Oktaeder
 	CEntity* OktaederObject = new CEntity(XMFLOAT3(-2, 0, 0));
 	SHC.CreateOktaeder(OktaederObject->AddComponent<CMesh>(), XMFLOAT4(0.79f, 0.57f, 0.66f, 1.0f));
-	OktaederObject->GetComponent<CMesh>()->SetMaterial(p_simpleMaterial);
+	OktaederObject->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
+		L"SimplePixelShader.cso", L"SimpleVertexShader.cso", L"..\\assets\\DefaultTexture.png", false));
+
 	CTM.AddEntity(OktaederObject);		// !IMPORTANT! Add Entity to Content Manager
 
 	// Sphere
 	CEntity* SphereObject = new CEntity(XMFLOAT3(2, 0, 0));
 	SHC.CreateSphere(SphereObject->AddComponent<CMesh>(), 40, 40);
-	SphereObject->GetComponent<CMesh>()->SetMaterial(p_worldMapMaterial);
+	SphereObject->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
+		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", L"..\\assets\\WorldMap.jpeg", false));
+
 	CTM.AddEntity(SphereObject);		// !IMPORTANT! Add Entity to Content Manager
 
+	// Plane
 	CEntity* TexturedPlane = new CEntity(XMFLOAT3(0, -2, 0));
 	SHC.CreatePlane(TexturedPlane->AddComponent<CMesh>());
-	TexturedPlane->GetComponent<CMesh>()->SetMaterial(p_happyMaterial);
+	TexturedPlane->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
+		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", L"..\\assets\\test.png", false));
+
 	CTM.AddEntity(TexturedPlane);		// !IMPORTANT! Add Entity to Content Manager
 
 	return 0;
@@ -516,6 +518,9 @@ void CGame::Update(float _deltaTime)
 
 	// Update entities
 	m_contentManager.Update(_deltaTime);
+
+	p_skybox->p_transform->TranslationMatrix = XMMatrixTranslation(XMVectorGetX(XMLoadFloat3(&m_camPos)), XMVectorGetY(XMLoadFloat3(&m_camPos)), XMVectorGetZ(XMLoadFloat3(&m_camPos)));
+	p_skybox->p_transform->WorldMatrix = p_skybox->p_transform->LocalScaleMatrix * p_skybox->p_transform->RotationMatrix * p_skybox->p_transform->TranslationMatrix;
 }
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam)

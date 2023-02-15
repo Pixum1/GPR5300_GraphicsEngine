@@ -89,5 +89,5 @@ void CMesh::SetMaterial(CMaterial* _mat)
 {
 	p_material = _mat;
 
-	p_material->Init(DXS.m_device, DXS.m_deviceContext);
+	p_material->Init();
 }

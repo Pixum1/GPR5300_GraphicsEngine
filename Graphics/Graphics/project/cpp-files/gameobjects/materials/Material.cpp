@@ -2,30 +2,16 @@
 #include "../../../header-files/gameobjects/materials/Texture.h"
 #include "../../../header-files/gameobjects/materials/Cubemap.h"
 
-int CMaterial::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
+int CMaterial::Init()
 {
-	p_dxdevice = _p_dxdevice;
-	p_dxcontext = _p_dxcontext;
-
-	CreateVertexShader();
-	CreatePixelShader();
-
-	return 0;
-}
-
-int CMaterial::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext, LPCWSTR _fileName, bool _isCubemap)
-{
-	p_dxdevice = _p_dxdevice;
-	p_dxcontext = _p_dxcontext;
-
-	if (!_isCubemap)
+	if (!isCubemap)
 	{
-		p_texture = new CTexture(_fileName);
+		p_texture = new CTexture(fileName);
 		p_texture->Init(p_dxdevice, p_dxcontext);
 	}
 	else
 	{
-		p_cubemap = new CCubemap(_fileName);
+		p_cubemap = new CCubemap(fileName);
 		p_cubemap->Init(p_dxdevice, p_dxcontext);
 	}
 

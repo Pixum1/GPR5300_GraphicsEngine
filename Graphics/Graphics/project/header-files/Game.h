@@ -66,12 +66,6 @@ private:
 	SLightConstantBuffer m_lightConstantBuffer;
 
 	bool m_isRunning;
-
-	CMaterial* p_simpleMaterial;
-	CMaterial* p_worldMapMaterial;
-	CMaterial* p_happyMaterial;
-	CMaterial* p_skyboxMaterial;
-
 public:
 	int Initialize(HINSTANCE _hInstance);
 	int Run();
@@ -101,5 +95,7 @@ private:
 
 	void Update(float _deltaTime);
 	void Render();
+
+	CEntity* p_skybox;
 };
 
