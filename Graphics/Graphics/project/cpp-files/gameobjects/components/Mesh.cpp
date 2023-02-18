@@ -59,6 +59,7 @@ void CMesh::Render()
 	unsigned int stride = sizeof(SVertexPosColor);
 
 	if (p_material == nullptr) return;
+
 	p_material->Render();
 
 	// Input Assembler
@@ -75,6 +76,7 @@ void CMesh::Render()
 
 	// Pixel Shader
 	DXS.m_deviceContext->PSSetConstantBuffers(0, 1, &DXS.m_constantBuffers[CB_LIGHT]);
+	DXS.m_deviceContext->PSSetConstantBuffers(1, 1, &DXS.m_constantBuffers[CB_OBJECT]);
 
 	// Output Merger
 	DXS.m_deviceContext->OMSetRenderTargets(1, &DXS.m_renderTargetView, DXS.m_depthStencilView);

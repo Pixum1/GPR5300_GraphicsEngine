@@ -56,21 +56,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Scripts\ShapeCreator.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\ConstantBuffer.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\VertexPosColor.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\DirectXSettings.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Scripts\WindowSettings.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="project\header-files\gameobjects\components\Component.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -145,6 +130,8 @@
     <FxCompile Include="Shader\SkyboxVertexShader.hlsl">
       <Filter>Ressourcendateien</Filter>
     </FxCompile>
+    <FxCompile Include="shader\NormalmapPixelShader.hlsl" />
+    <FxCompile Include="shader\NormalmapVertexShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

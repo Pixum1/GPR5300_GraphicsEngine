@@ -28,8 +28,8 @@ struct VertexShaderOutput
 VertexShaderOutput main(VertexShaderInput INPUT )
 {
     VertexShaderOutput OUT;
-    matrix wvp = transpose(mul(mul(worldMatrix, viewMatrix), projectionMatrix));
-	
+	matrix wvp = transpose(mul(projectionMatrix, mul(viewMatrix, worldMatrix)));
+
     OUT.pos = mul(float4(INPUT.pos, 1.0f), wvp).xyww; //Set Pos to xyww instead of xyzw, so that z will always be 1 (furthest from camera)
     OUT.uv = INPUT.pos;
 

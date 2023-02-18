@@ -1,5 +1,7 @@
 Texture2D mainTex : register(t0);
 SamplerState mainSampler : register(s0);
+Texture2D normalTex : register(t1);
+SamplerState normalSampler : register(s1);
 
 cbuffer Light : register(b0)
 {
@@ -11,6 +13,11 @@ cbuffer Light : register(b0)
 	float3 CameraPos;
 }
 
+cbuffer PerObject : register(b1)
+{
+	matrix worldMatrix;			// Umrechnung von Object zu World
+}
+
 struct PixelShaderInput
 {
 	float4 pos : SV_POSITION;
@@ -20,7 +27,7 @@ struct PixelShaderInput
 	float2 uv : TEXCOORD;
 };
 
-float4 TexturedPixelShader(PixelShaderInput _in) : SV_TARGET
+float4 main(PixelShaderInput _in) : SV_TARGET
 {
 	float4 col = _in.color * mainTex.Sample(mainSampler, _in.uv);
 
@@ -33,17 +40,21 @@ float4 TexturedPixelShader(PixelShaderInput _in) : SV_TARGET
 	// dot - Punktprodukt float dot(float4 _a, float4 _b) gibt bei normalisierten Vektoren werte von -1 bis 1 aus, 
 	//				beinhaltet den Innenwinkel
 
+	float3 normal = normalTex.Sample(normalSampler, _in.uv);
+	normal = normalize(normal * 2 - float3(1, 1, 1));
+	normal = mul(worldMatrix, float4(normal, 0.0f));
+
 	float3 diffuse = saturate(col.xyz
 								* DiffuseColor.xyz
-								* dot(normalize(-LightDir), normalize(_in.normal))
+								* dot(normalize(-LightDir), normal)
 								* DiffuseColor.a);
 
 	// Hilfsvektor ist der durchschnitt aus Lichtrichtung und Punkt zu Kamera
 	// dieser wird mit der normalen verglichen und bei übereinstimmung viel zu glänzen
 	float3 halfVector = normalize(normalize(CameraPos - _in.posWorld.xyz) + normalize(-LightDir));
 
-	float dotP = dot(halfVector, normalize(_in.normal));
-	dotP = pow(dotP, 100);
+	float dotP = dot(halfVector, normal);
+	dotP = pow(dotP, 50);
 
 	float3 specular = saturate(SpecularColor.xyz * dotP * SpecularColor.w);
 

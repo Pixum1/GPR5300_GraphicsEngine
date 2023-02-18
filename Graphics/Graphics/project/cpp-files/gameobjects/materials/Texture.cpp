@@ -6,7 +6,6 @@ int CTexture::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
 	p_dxdevice = _p_dxdevice;
 	p_dxcontext = _p_dxcontext;
 
-
 	HRESULT hr = CreateWICTextureFromFile(p_dxdevice, fileName, &p_texture, &p_shaderResourceView);
 	if (FAILED(hr))
 	{
@@ -35,8 +34,10 @@ int CTexture::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
 
 int CTexture::Update()
 {
-	p_dxcontext->PSSetSamplers(0, 1, &p_textureSampler);
-	p_dxcontext->PSSetShaderResources(0, 1, &p_shaderResourceView);
+	int pos = m_isNormalmap ? 1 : 0;
+
+	p_dxcontext->PSSetSamplers(pos, 1, &p_textureSampler);
+	p_dxcontext->PSSetShaderResources(pos, 1, &p_shaderResourceView);
 
     return 0;
 }

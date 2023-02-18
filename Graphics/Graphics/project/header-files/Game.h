@@ -7,6 +7,7 @@
 #include "manager/InputManager.h"
 #include "manager/ShapeCreator.h"
 
+#define GetGame (CGame::Get())
 #define WDS (*(CGame::Get()->GetWindowSettings()))
 #define DXS (*(CGame::Get()->GetDirectXSettings()))
 #define CTM (*(CGame::Get()->GetContentManager()))
@@ -58,14 +59,17 @@ private:
 	CInputManager m_inputManager;
 	CShapeCreator m_shapeCreator;
 
-	XMFLOAT3 m_camPos;
-	XMFLOAT3 m_camRot;
-
 	SStandardConstantBuffer m_applicationConstantBuffer;
 	SStandardConstantBuffer m_frameConstantBuffer;
 	SLightConstantBuffer m_lightConstantBuffer;
-
 	bool m_isRunning;
+
+public:
+	XMFLOAT3 m_camPos;
+	XMFLOAT3 m_camRot;
+	XMFLOAT3 m_lightDirection = XMFLOAT3(0.2f, -1.0f, 0.2f);
+	XMFLOAT4 m_ambientLight = XMFLOAT4(0.25f, 0.25f, 0.25f, 1);
+
 public:
 	int Initialize(HINSTANCE _hInstance);
 	int Run();

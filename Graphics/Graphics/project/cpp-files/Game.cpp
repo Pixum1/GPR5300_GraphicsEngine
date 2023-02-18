@@ -345,6 +345,8 @@ int CGame::InitConstantBuffers()
 
 	m_camPos = XMFLOAT3(0, 0, -5);
 
+	//m_lightDirection = XMFLOAT3(0.2f, -1.0f, 0.2f);
+
 	return 0;
 }
 
@@ -376,15 +378,6 @@ void CGame::Render()
 	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_FRAME], 0, nullptr, &m_frameConstantBuffer, 0, 0);
 #pragma endregion
 
-#pragma region Update Light ConstantBuffer
-	m_lightConstantBuffer.AmbientColor = XMFLOAT4(0.25f, 0.25f, 0.25f, 1);
-	m_lightConstantBuffer.DiffuseColor = XMFLOAT4(0.8f, 0.8f, 0.8f, 1);
-	m_lightConstantBuffer.SpecularColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1);
-	m_lightConstantBuffer.CameraPos = m_camPos;
-	m_lightConstantBuffer.LightDir = XMFLOAT3(0.2f, -1.0f, 0.2f);
-
-	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_LIGHT], 0, nullptr, &m_lightConstantBuffer, 0, 0);
-#pragma endregion
 
 	m_contentManager.Render();
 
@@ -397,14 +390,14 @@ int CGame::LoadLevel()
 	p_skybox = new CEntity(XMFLOAT3(0, 0, 0));
 	SHC.CreateSphere(p_skybox->AddComponent<CMesh>(), 40, 40);
 	p_skybox->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
-		L"SkyboxPixelShader.cso", L"SkyboxVertexShader.cso", L"..\\Assets\\Skybox.dds", true));
+		L"SkyboxPixelShader.cso", L"SkyboxVertexShader.cso", L"..\\Assets\\Skybox.dds", nullptr, true));
 	CTM.AddEntity(p_skybox);
 
 	// Cube
 	CEntity* CubeObject = new CEntity(XMFLOAT3(0, 0, 0));
-	SHC.CreateCube(CubeObject->AddComponent<CMesh>(), XMFLOAT4(0.33f, 0.69f, 0.33f, 1.0f));
+	SHC.CreateCube(CubeObject->AddComponent<CMesh>());
 	CubeObject->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
-		L"SimplePixelShader.cso", L"SimpleVertexShader.cso", L"..\\assets\\DefaultTexture.png", false));
+		L"NormalmapPixelShader.cso", L"NormalmapVertexShader.cso", L"..\\assets\\Stones.jpg", L"..\\assets\\StonesNormal.jpg", false));
 
 	CTM.AddEntity(CubeObject);			// !IMPORTANT! Add Entity to Content Manager
 
@@ -412,25 +405,46 @@ int CGame::LoadLevel()
 	CEntity* OktaederObject = new CEntity(XMFLOAT3(-2, 0, 0));
 	SHC.CreateOktaeder(OktaederObject->AddComponent<CMesh>(), XMFLOAT4(0.79f, 0.57f, 0.66f, 1.0f));
 	OktaederObject->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
-		L"SimplePixelShader.cso", L"SimpleVertexShader.cso", L"..\\assets\\DefaultTexture.png", false));
+		L"SimplePixelShader.cso", L"SimpleVertexShader.cso", L"..\\assets\\DefaultTexture.png", nullptr, false));
 
 	CTM.AddEntity(OktaederObject);		// !IMPORTANT! Add Entity to Content Manager
 
 	// Sphere
 	CEntity* SphereObject = new CEntity(XMFLOAT3(2, 0, 0));
-	SHC.CreateSphere(SphereObject->AddComponent<CMesh>(), 40, 40);
+	SHC.CreateSphere(SphereObject->AddComponent<CMesh>(), 40, 40, XMFLOAT4(1,0,0,1));
 	SphereObject->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
-		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", L"..\\assets\\WorldMap.jpeg", false));
+		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", L"..\\assets\\DefaultTexture.png", nullptr, false));
 
 	CTM.AddEntity(SphereObject);		// !IMPORTANT! Add Entity to Content Manager
+	SphereObject->GetComponent<CMesh>()->p_material->smoothness = 1;
+
+	// Sphere
+	CEntity* MatteSphereObject = new CEntity(XMFLOAT3(4, 0, 0));
+	SHC.CreateSphere(MatteSphereObject->AddComponent<CMesh>(), 40, 40, XMFLOAT4(1, 0, 0, 1));
+	MatteSphereObject->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
+		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", L"..\\assets\\DefaultTexture.png", nullptr, false));
+
+	CTM.AddEntity(MatteSphereObject);		// !IMPORTANT! Add Entity to Content Manager
+	MatteSphereObject->GetComponent<CMesh>()->p_material->smoothness = 0;
+
+	// Sphere - Matte
+	CEntity* NormalMapSphere = new CEntity(XMFLOAT3(0, 2, 0));
+	SHC.CreateSphere(NormalMapSphere->AddComponent<CMesh>(), 40, 40);
+	NormalMapSphere->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
+		L"NormalmapPixelShader.cso", L"NormalmapVertexShader.cso", L"..\\assets\\Stones.jpg", L"..\\assets\\StonesNormal.jpg", false));
+
+	CTM.AddEntity(NormalMapSphere);		// !IMPORTANT! Add Entity to Content Manager
+	NormalMapSphere->GetComponent<CMesh>()->p_material->smoothness = 0;
 
 	// Plane
 	CEntity* TexturedPlane = new CEntity(XMFLOAT3(0, -2, 0));
 	SHC.CreatePlane(TexturedPlane->AddComponent<CMesh>());
 	TexturedPlane->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
-		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", L"..\\assets\\test.png", false));
+		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", L"..\\assets\\test.png", nullptr, false));
 
 	CTM.AddEntity(TexturedPlane);		// !IMPORTANT! Add Entity to Content Manager
+
+
 
 	return 0;
 }

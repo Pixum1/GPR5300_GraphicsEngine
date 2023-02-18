@@ -31,13 +31,13 @@ struct VertexShaderOutput
 };
 
 
-VertexShaderOutput TexturedVertexShader(VertexShaderInput _in)
+VertexShaderOutput main(VertexShaderInput _in)
 {
 	VertexShaderOutput o;
 	matrix mvp = mul(projectionMatrix, mul(viewMatrix, worldMatrix));
 
 	o.pos = mul(mvp, float4(_in.pos, 1.0f));	// 1 für positionen, 0 für Richtungen
-	o.posWorld = mul(transpose(worldMatrix), float4(_in.pos, 1.0f));
+	o.posWorld = mul(worldMatrix, float4(_in.pos, 1.0f));
 	o.normal = mul(worldMatrix, float4(_in.normal, 0.0f));	// Lichtberechnung in Worldspace
 	o.color = _in.color;
 	o.uv = _in.uv;

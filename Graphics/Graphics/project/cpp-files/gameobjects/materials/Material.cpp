@@ -6,12 +6,18 @@ int CMaterial::Init()
 {
 	if (!isCubemap)
 	{
-		p_texture = new CTexture(fileName);
-		p_texture->Init(p_dxdevice, p_dxcontext);
+		p_albedo = new CTexture(albedoFileName, false);
+		p_albedo->Init(p_dxdevice, p_dxcontext);
+
+		if (normalMapFileName != nullptr)
+		{
+			p_normal = new CTexture(normalMapFileName, true);
+			p_normal->Init(p_dxdevice, p_dxcontext);
+		}
 	}
 	else
 	{
-		p_cubemap = new CCubemap(fileName);
+		p_cubemap = new CCubemap(albedoFileName);
 		p_cubemap->Init(p_dxdevice, p_dxcontext);
 	}
 
@@ -23,6 +29,18 @@ int CMaterial::Init()
 
 void CMaterial::Render()
 {
+#pragma region Update Light Constant Buffer
+	SLightConstantBuffer lightBuffer = {};
+
+	lightBuffer.AmbientColor = GetGame->m_ambientLight;
+	lightBuffer.DiffuseColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1);
+	lightBuffer.SpecularColor = XMFLOAT4(1.0f, 1.0f, 1.0f, smoothness);
+	lightBuffer.CameraPos = GetGame->m_camPos;
+	lightBuffer.LightDir = XMFLOAT3(0.2f, -1.0f, 0.2f);
+
+	p_dxcontext->UpdateSubresource(DXS.m_constantBuffers[CB_LIGHT], 0, nullptr, &lightBuffer, 0, 0);
+#pragma endregion
+
 	// Vertex Shader
 	p_dxcontext->VSSetShader(p_vertexShader, nullptr, 0);
 	// Pixel Shader
@@ -30,8 +48,11 @@ void CMaterial::Render()
 
 	p_dxcontext->IASetInputLayout(p_inputLayout);
 
-	if (p_texture != nullptr)
-		p_texture->Update();
+	if (p_albedo != nullptr)
+		p_albedo->Update();
+
+	if (p_normal != nullptr)
+		p_normal->Update();
 
 	if (p_cubemap != nullptr)
 		p_cubemap->Update();
@@ -41,21 +62,6 @@ bool CMaterial::DeInit()
 	return false;
 }
 
-int CMaterial::CreateVertexShader()
-{
-	ID3DBlob* shaderBlob;
-
-	HRESULT hr = D3DReadFileToBlob(vertexShaderName, &shaderBlob);
-	FAILHR(-50);
-
-	hr = p_dxdevice->CreateVertexShader(shaderBlob->GetBufferPointer(),
-		shaderBlob->GetBufferSize(), nullptr, &p_vertexShader);
-	FAILHR(-51);
-
-	CreateInputLayout(shaderBlob);
-
-	return 0;
-}
 
 int CMaterial::CreateInputLayout(ID3DBlob* _p_vertexBlob)
 {
@@ -109,6 +115,21 @@ int CMaterial::CreateInputLayout(ID3DBlob* _p_vertexBlob)
 	return 0;
 }
 
+int CMaterial::CreateVertexShader()
+{
+	ID3DBlob* shaderBlob;
+
+	HRESULT hr = D3DReadFileToBlob(vertexShaderName, &shaderBlob);
+	FAILHR(-50);
+
+	hr = p_dxdevice->CreateVertexShader(shaderBlob->GetBufferPointer(),
+		shaderBlob->GetBufferSize(), nullptr, &p_vertexShader);
+	FAILHR(-51);
+
+	CreateInputLayout(shaderBlob);
+
+	return 0;
+}
 int CMaterial::CreatePixelShader()
 {
 	ID3DBlob* shaderBlob;
