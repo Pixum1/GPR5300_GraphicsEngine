@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="project\cpp-files\manager\ObjLoader.cpp" />
     <ClCompile Include="project\cpp-files\gameobjects\components\Component.cpp" />
     <ClCompile Include="project\cpp-files\manager\ContentManager.cpp" />
     <ClCompile Include="project\cpp-files\gameobjects\materials\Cubemap.cpp" />
@@ -161,6 +162,7 @@
     <ClCompile Include="project\cpp-files\gameobjects\Transform2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="project\header-files\manager\ObjLoader.h" />
     <ClInclude Include="project\header-files\gameobjects\components\Component.h" />
     <ClInclude Include="project\header-files\manager\ContentManager.h" />
     <ClInclude Include="project\header-files\gameobjects\materials\Cubemap.h" />
@@ -172,7 +174,7 @@
     <ClInclude Include="project\header-files\gameobjects\materials\Material.h" />
     <ClInclude Include="project\header-files\gameobjects\components\Mesh.h" />
     <ClInclude Include="project\header-files\misc\ConstantBuffer.h" />
-    <ClInclude Include="project\header-files\misc\VertexPosColor.h" />
+    <ClInclude Include="project\header-files\misc\VertexData.h" />
     <ClInclude Include="project\header-files\settings\DirectXSettings.h" />
     <ClInclude Include="project\header-files\settings\WindowSettings.h" />
     <ClInclude Include="project\header-files\misc\GraphicsPCH.h" />

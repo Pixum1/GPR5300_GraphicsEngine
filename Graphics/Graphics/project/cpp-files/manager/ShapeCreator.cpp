@@ -6,7 +6,7 @@ void CShapeCreator::CreateCube(CMesh* _p_mesh, XMFLOAT4 _color)
 	_p_mesh->m_vertexCount = 4 * 6;
 	_p_mesh->m_indexCount = 6 * 6;
 
-	_p_mesh->Vertices = new SVertexPosColor[_p_mesh->m_vertexCount];
+	_p_mesh->Vertices = new SVertexData[_p_mesh->m_vertexCount];
 	_p_mesh->Indices = new WORD[_p_mesh->m_indexCount];
 
 	int i = 0;
@@ -65,7 +65,7 @@ void CShapeCreator::CreateOktaeder(CMesh* _p_mesh, XMFLOAT4 _color)
 	_p_mesh->m_vertexCount = 8 * 3;
 	_p_mesh->m_indexCount = 8 * 3;
 
-	_p_mesh->Vertices = new SVertexPosColor[_p_mesh->m_vertexCount];
+	_p_mesh->Vertices = new SVertexData[_p_mesh->m_vertexCount];
 	_p_mesh->Indices = new WORD[_p_mesh->m_indexCount];
 
 	int i = 0;
@@ -115,10 +115,10 @@ void CShapeCreator::CreateSphere(CMesh* _p_mesh, int _slices, int _heightSegment
 	_p_mesh->m_vertexCount = _slices * _heightSegments + 2 + _heightSegments;
 	_p_mesh->m_indexCount = _heightSegments * _slices * 6;
 
-	_p_mesh->Vertices = new SVertexPosColor[_p_mesh->m_vertexCount];
+	_p_mesh->Vertices = new SVertexData[_p_mesh->m_vertexCount];
 	_p_mesh->Indices = new WORD[_p_mesh->m_indexCount];
 
-	ZeroMemory(_p_mesh->Vertices, _p_mesh->m_vertexCount * sizeof(SVertexPosColor));
+	ZeroMemory(_p_mesh->Vertices, _p_mesh->m_vertexCount * sizeof(SVertexData));
 	ZeroMemory(_p_mesh->Indices, _p_mesh->m_indexCount * sizeof(WORD));
 
 	int i = 0;
@@ -178,7 +178,7 @@ void CShapeCreator::CreatePlane(CMesh* _p_mesh, XMFLOAT4 _color)
 	_p_mesh->m_vertexCount = 4;
 	_p_mesh->m_indexCount = 6;
 
-	_p_mesh->Vertices = new SVertexPosColor[_p_mesh->m_vertexCount];
+	_p_mesh->Vertices = new SVertexData[_p_mesh->m_vertexCount];
 	_p_mesh->Indices = new WORD[_p_mesh->m_indexCount];
 
 	int i = 0;

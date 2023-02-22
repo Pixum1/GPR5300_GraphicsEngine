@@ -4,6 +4,8 @@
 #include "../header-files/gameobjects/components/Component.h"
 #include "../header-files/misc/MathHelper.h"
 #include "../header-files/gameobjects/materials/Material.h"
+#include "../header-files/gameobjects/materials/Texture.h"
+#include "../header-files/gameobjects/materials/Cubemap.h"
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam);
 
@@ -390,14 +392,15 @@ int CGame::LoadLevel()
 	p_skybox = new CEntity(XMFLOAT3(0, 0, 0));
 	SHC.CreateSphere(p_skybox->AddComponent<CMesh>(), 40, 40);
 	p_skybox->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
-		L"SkyboxPixelShader.cso", L"SkyboxVertexShader.cso", L"..\\Assets\\Skybox.dds", nullptr, true));
+		L"SkyboxPixelShader.cso", L"SkyboxVertexShader.cso", new CCubemap(L"..\\Assets\\Skybox.dds", Albedo), nullptr));
+
 	CTM.AddEntity(p_skybox);
 
 	// Cube
 	CEntity* CubeObject = new CEntity(XMFLOAT3(0, 0, 0));
 	SHC.CreateCube(CubeObject->AddComponent<CMesh>());
 	CubeObject->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
-		L"NormalmapPixelShader.cso", L"NormalmapVertexShader.cso", L"..\\assets\\Stones.jpg", L"..\\assets\\StonesNormal.jpg", false));
+		L"NormalmapPixelShader.cso", L"NormalmapVertexShader.cso", new CTexture(L"..\\assets\\Grass.jpg", Albedo), new CTexture(L"..\\assets\\GrassNormal.jpg", Normalmap)));
 
 	CTM.AddEntity(CubeObject);			// !IMPORTANT! Add Entity to Content Manager
 
@@ -405,15 +408,15 @@ int CGame::LoadLevel()
 	CEntity* OktaederObject = new CEntity(XMFLOAT3(-2, 0, 0));
 	SHC.CreateOktaeder(OktaederObject->AddComponent<CMesh>(), XMFLOAT4(0.79f, 0.57f, 0.66f, 1.0f));
 	OktaederObject->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
-		L"SimplePixelShader.cso", L"SimpleVertexShader.cso", L"..\\assets\\DefaultTexture.png", nullptr, false));
+		L"SimplePixelShader.cso", L"SimpleVertexShader.cso", new CTexture(L"..\\assets\\DefaultTexture.png", Albedo), nullptr));
 
 	CTM.AddEntity(OktaederObject);		// !IMPORTANT! Add Entity to Content Manager
 
 	// Sphere
 	CEntity* SphereObject = new CEntity(XMFLOAT3(2, 0, 0));
-	SHC.CreateSphere(SphereObject->AddComponent<CMesh>(), 40, 40, XMFLOAT4(1,0,0,1));
+	SHC.CreateSphere(SphereObject->AddComponent<CMesh>(), 40, 40, XMFLOAT4(1, 0, 0, 1));
 	SphereObject->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
-		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", L"..\\assets\\DefaultTexture.png", nullptr, false));
+		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", new CTexture(L"..\\assets\\DefaultTexture.png", Albedo), nullptr));
 
 	CTM.AddEntity(SphereObject);		// !IMPORTANT! Add Entity to Content Manager
 	SphereObject->GetComponent<CMesh>()->p_material->smoothness = 1;
@@ -422,25 +425,40 @@ int CGame::LoadLevel()
 	CEntity* MatteSphereObject = new CEntity(XMFLOAT3(4, 0, 0));
 	SHC.CreateSphere(MatteSphereObject->AddComponent<CMesh>(), 40, 40, XMFLOAT4(1, 0, 0, 1));
 	MatteSphereObject->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
-		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", L"..\\assets\\DefaultTexture.png", nullptr, false));
+		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", new CTexture(L"..\\assets\\DefaultTexture.png", Albedo), nullptr));
 
 	CTM.AddEntity(MatteSphereObject);		// !IMPORTANT! Add Entity to Content Manager
 	MatteSphereObject->GetComponent<CMesh>()->p_material->smoothness = 0;
 
-	// Sphere - Matte
+	// Sphere - Normalmap
 	CEntity* NormalMapSphere = new CEntity(XMFLOAT3(0, 2, 0));
 	SHC.CreateSphere(NormalMapSphere->AddComponent<CMesh>(), 40, 40);
 	NormalMapSphere->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
-		L"NormalmapPixelShader.cso", L"NormalmapVertexShader.cso", L"..\\assets\\Stones.jpg", L"..\\assets\\StonesNormal.jpg", false));
+		L"NormalmapPixelShader.cso", L"NormalmapVertexShader.cso", new CTexture(L"..\\assets\\Stones.jpg", Albedo), new CTexture(L"..\\assets\\StonesNormal.jpg", Normalmap)));
 
 	CTM.AddEntity(NormalMapSphere);		// !IMPORTANT! Add Entity to Content Manager
-	NormalMapSphere->GetComponent<CMesh>()->p_material->smoothness = 0;
+
+	// Sphere - Normalmap
+	CEntity* NoNormalMapSphere = new CEntity(XMFLOAT3(-1, 2, 0));
+	SHC.CreateSphere(NoNormalMapSphere->AddComponent<CMesh>(), 40, 40);
+	NoNormalMapSphere->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
+		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", new CTexture(L"..\\assets\\Stones.jpg", Albedo), nullptr));
+
+	CTM.AddEntity(NoNormalMapSphere);		// !IMPORTANT! Add Entity to Content Manager
+
+	// Sphere - Normalmap
+	CEntity* WoodNormalMapSphere = new CEntity(XMFLOAT3(2, 2, 0));
+	SHC.CreateSphere(WoodNormalMapSphere->AddComponent<CMesh>(), 40, 40);
+	WoodNormalMapSphere->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
+		L"NormalmapPixelShader.cso", L"NormalmapVertexShader.cso", new CTexture(L"..\\assets\\Wood.jpg", Albedo), new CTexture(L"..\\assets\\WoodNormal.jpg", Normalmap)));
+
+	CTM.AddEntity(WoodNormalMapSphere);		// !IMPORTANT! Add Entity to Content Manager
 
 	// Plane
 	CEntity* TexturedPlane = new CEntity(XMFLOAT3(0, -2, 0));
 	SHC.CreatePlane(TexturedPlane->AddComponent<CMesh>());
 	TexturedPlane->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
-		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", L"..\\assets\\test.png", nullptr, false));
+		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", new CTexture(L"..\\assets\\test.png", Albedo), nullptr));
 
 	CTM.AddEntity(TexturedPlane);		// !IMPORTANT! Add Entity to Content Manager
 

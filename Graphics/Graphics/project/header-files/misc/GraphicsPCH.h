@@ -14,6 +14,8 @@
 #include <string>
 #include <iostream>
 #include <list>
+#include <fstream>
+#include <istream>
 
 // Mathe
 #include <algorithm>

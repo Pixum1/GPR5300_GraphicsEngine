@@ -1,5 +1,5 @@
 #pragma once
-#include "../../misc/VertexPosColor.h"
+#include "../../misc/VertexData.h"
 #include "../../misc/ConstantBuffer.h"
 #include "Component.h"
 
@@ -23,7 +23,7 @@ public:
 	void SetMaterial(CMaterial* _mat);
 
 public:
-	SVertexPosColor* Vertices;
+	SVertexData* Vertices;
 	WORD* Indices;
 	int m_vertexCount;
 	int m_indexCount;

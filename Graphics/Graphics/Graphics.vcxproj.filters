@@ -54,6 +54,9 @@
     <ClCompile Include="project\cpp-files\gameobjects\Transform2D.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="project\cpp-files\manager\ObjLoader.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="project\header-files\gameobjects\components\Component.h">
@@ -89,7 +92,7 @@
     <ClInclude Include="project\header-files\misc\ConstantBuffer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="project\header-files\misc\VertexPosColor.h">
+    <ClInclude Include="project\header-files\misc\VertexData.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="project\header-files\settings\DirectXSettings.h">
@@ -108,6 +111,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="project\header-files\gameobjects\Transform2D.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="project\header-files\manager\ObjLoader.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

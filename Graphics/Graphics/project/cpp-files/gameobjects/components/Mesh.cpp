@@ -8,7 +8,7 @@ bool CMesh::Init(ID3D11Device* _p_device, ID3D11DeviceContext* _p_devicecontext)
 {
 	D3D11_BUFFER_DESC bufferDesc = { 0 };
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bufferDesc.ByteWidth = sizeof(SVertexPosColor) * m_vertexCount;
+	bufferDesc.ByteWidth = sizeof(SVertexData) * m_vertexCount;
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
 
 	D3D11_SUBRESOURCE_DATA ressourceData = { 0 };
@@ -56,7 +56,7 @@ void CMesh::Render()
 		0, nullptr, &m_objectConstantBuffer, 0, 0);
 
 	unsigned int offset = 0;
-	unsigned int stride = sizeof(SVertexPosColor);
+	unsigned int stride = sizeof(SVertexData);
 
 	if (p_material == nullptr) return;
 

@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 
-#include "../misc/VertexPosColor.h"
+#include "../misc/VertexData.h"
 #include "../misc/ConstantBuffer.h"
 #include "Transform.h"
 

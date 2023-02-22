@@ -1,26 +1,26 @@
 #pragma once
 #include "../../misc/GraphicsPCH.h"
 
+enum ETextureType {
+	Albedo = 0,
+	Normalmap = 1,
+};
+
 class CTexture
 {
 public:
-	CTexture(LPCWSTR _fileName, bool _isNormalMap)
+	CTexture(LPCWSTR _fileName, ETextureType _type)
 	{
 		fileName = _fileName;
-		m_isNormalmap = _isNormalMap;
+		m_textureType = _type;
 	};
 
-	int Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext);
-	int Update();
-	int DeInit();
-
-
-public:
-	ID3D11VertexShader* p_vertexShader = nullptr;
-	ID3D11PixelShader* p_pixelShader = nullptr;
+	virtual int Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext);
+	virtual int Update();
+	virtual int DeInit();
 
 protected:
-	bool m_isNormalmap;
+	ETextureType m_textureType;
 
 	ID3D11Device* p_dxdevice;
 	ID3D11DeviceContext* p_dxcontext;

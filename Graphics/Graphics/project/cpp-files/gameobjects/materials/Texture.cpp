@@ -34,10 +34,8 @@ int CTexture::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
 
 int CTexture::Update()
 {
-	int pos = m_isNormalmap ? 1 : 0;
-
-	p_dxcontext->PSSetSamplers(pos, 1, &p_textureSampler);
-	p_dxcontext->PSSetShaderResources(pos, 1, &p_shaderResourceView);
+	p_dxcontext->PSSetSamplers(m_textureType, 1, &p_textureSampler);
+	p_dxcontext->PSSetShaderResources(m_textureType, 1, &p_shaderResourceView);
 
     return 0;
 }

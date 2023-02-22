@@ -1,10 +1,12 @@
 #pragma once
 #include "GraphicsPCH.h"
 
-struct SVertexPosColor
+struct SVertexData
 {
 	XMFLOAT3 Position;
 	XMFLOAT3 Normal;
 	XMFLOAT4 Color;
 	XMFLOAT2 UV;
+	XMFLOAT3 Tangent;
+	XMFLOAT3 BiTangent;
 };
