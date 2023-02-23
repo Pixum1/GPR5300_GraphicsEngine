@@ -1,5 +1,5 @@
-#include "../../header-files/misc/GraphicsPCH.h"
 #include "../../header-files/manager/InputManager.h"
+#include "../../header-files/misc/GraphicsPCH.h"
 #include "../../header-files/Game.h"
 
 int InputManager::InitDirectInput(HINSTANCE _hInstance)

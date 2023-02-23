@@ -1,10 +1,10 @@
 #pragma once
 #include "../../misc/GraphicsPCH.h"
 #include "../../Game.h"
+#include "Texture.h"
+#include "Cubemap.h"
 
 class TextureData;
-class Texture;
-class Cubemap;
 
 class Material
 {

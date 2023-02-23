@@ -1,5 +1,6 @@
 #pragma once
 #include "../../misc/GraphicsPCH.h"
+#include "../../Game.h"
 
 /// <summary>
 /// Definition for the texturetype, integer value determines samplerstate and texture in the shader

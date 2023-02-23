@@ -146,7 +146,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="project\cpp-files\gameobjects\components\Component.cpp" />
     <ClCompile Include="project\cpp-files\manager\ContentManager.cpp" />
     <ClCompile Include="project\cpp-files\gameobjects\materials\Cubemap.cpp" />
     <ClCompile Include="project\cpp-files\gameobjects\materials\Material.cpp" />

@@ -1,6 +1,4 @@
 #include "../../../header-files/gameobjects/materials/Material.h"
-#include "../../../header-files/gameobjects/materials/Texture.h"
-#include "../../../header-files/gameobjects/materials/Cubemap.h"
 
 int Material::Init()
 {

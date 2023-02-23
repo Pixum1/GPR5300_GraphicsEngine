@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="project\cpp-files\gameobjects\components\Component.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="project\cpp-files\manager\ContentManager.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>

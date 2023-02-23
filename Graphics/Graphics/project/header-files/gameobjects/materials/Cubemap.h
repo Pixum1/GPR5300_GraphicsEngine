@@ -1,6 +1,7 @@
 #pragma once
 #include "../../misc/GraphicsPCH.h"
 #include "../../gameobjects/materials/Texture.h"
+#include "../../Game.h"
 
 class Cubemap : public Texture
 {
