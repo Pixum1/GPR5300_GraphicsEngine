@@ -8,7 +8,7 @@
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam);
 
-int CGame::Initialize(HINSTANCE _hInstance)
+int Game::Initialize(HINSTANCE _hInstance)
 {
 	if (!XMVerifyCPUSupport())
 	{
@@ -41,7 +41,7 @@ int CGame::Initialize(HINSTANCE _hInstance)
 	}
 
 	// Initialize directx input
-	returnValue = m_inputManager.InitDirectInput(_hInstance);
+	returnValue = inputManager.InitDirectInput(_hInstance);
 	if (FAILED(returnValue))
 	{
 		MessageBox(nullptr, L"Could not create Direct Input", L"Error", MB_OK);
@@ -50,22 +50,24 @@ int CGame::Initialize(HINSTANCE _hInstance)
 
 	Start();
 
-	m_isRunning = true;
+	isRunning = true;
 
 	return 0;
 }
 
-int CGame::Run()
+int Game::Run()
 {
 	MSG msg = { 0 };
 
+	// Calculate deltatime
 	static DWORD prevTime = timeGetTime();
 	static const float targetFrameRate = 30.0f;
 	static const float maxTimeStep = 1.0f / targetFrameRate;
 	static DWORD currentTime;
 	float deltaTime;
 
-	while (m_isRunning && msg.message != WM_QUIT)
+	// Update loop while application is running
+	while (isRunning && msg.message != WM_QUIT)
 	{
 		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
@@ -88,27 +90,27 @@ int CGame::Run()
 	return 0;
 }
 
-void CGame::Finalize()
+void Game::Finalize()
 {
-	SafeRelease(DXS.m_device);
-	SafeRelease(DXS.m_deviceContext);
-	SafeRelease(DXS.m_swapChain);
-	SafeRelease(DXS.m_renderTargetView);
-	SafeRelease(DXS.m_depthStencilBuffer);
-	SafeRelease(DXS.m_depthStencilView);
-	SafeRelease(DXS.m_depthStencilState);
-	SafeRelease(DXS.m_currentRasterrizerState);
+	SafeRelease(DXS.DxDevice);
+	SafeRelease(DXS.DxContext);
+	SafeRelease(DXS.SwapChain);
+	SafeRelease(DXS.RenderTargetView);
+	SafeRelease(DXS.DepthStencilBuffer);
+	SafeRelease(DXS.DepthStencilView);
+	SafeRelease(DXS.DepthStencilState);
+	SafeRelease(DXS.CurrentRasterrizerState);
 }
 
-void CGame::SwitchRasterizerState()
+void Game::SwitchRasterizerState()
 {
-	if (m_directXSettings.m_currentRasterrizerState == m_directXSettings.m_rasterrizerStateSolid)
-		m_directXSettings.m_currentRasterrizerState = m_directXSettings.m_rasterrizerStateWireframe;
+	if (directXSettings.CurrentRasterrizerState == directXSettings.RasterrizerStateSolid)
+		directXSettings.CurrentRasterrizerState = directXSettings.RasterrizerStateWireframe;
 	else
-		m_directXSettings.m_currentRasterrizerState = m_directXSettings.m_rasterrizerStateSolid;
+		directXSettings.CurrentRasterrizerState = directXSettings.RasterrizerStateSolid;
 }
 
-int CGame::InitApplication(HINSTANCE _hInstance)
+int Game::InitApplication(HINSTANCE _hInstance)
 {
 	WNDCLASSEX wndClass = { 0 };
 
@@ -118,18 +120,18 @@ int CGame::InitApplication(HINSTANCE _hInstance)
 	wndClass.hInstance = _hInstance;
 	wndClass.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	wndClass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 9);
-	wndClass.lpszClassName = m_windowSettings.m_WindowClassName;
+	wndClass.lpszClassName = windowSettings.WindowClassName;
 
 	if (!RegisterClassEx(&wndClass))
 	{
 		return -2;
 	}
 
-	RECT windowRect = { 0,0, m_windowSettings.m_WindowWidth, m_windowSettings.m_WindowHeight };
+	RECT windowRect = { 0,0, windowSettings.WindowWidth, windowSettings.WindowHeight };
 	AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, false);
 
-	m_windowSettings.m_WindowHandle = CreateWindowA(m_windowSettings.m_WindowClassNameShort,
-		m_windowSettings.m_WindowName,
+	windowSettings.WindowHandle = CreateWindowA(windowSettings.WindowClassNameShort,
+		windowSettings.WindowName,
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
@@ -140,21 +142,22 @@ int CGame::InitApplication(HINSTANCE _hInstance)
 		_hInstance,
 		nullptr);
 
-	if (!m_windowSettings.m_WindowHandle)
+	if (!windowSettings.WindowHandle)
 	{
 		return -3;
 	}
 
-	ShowWindow(m_windowSettings.m_WindowHandle, 10);
-	UpdateWindow(m_windowSettings.m_WindowHandle);
+	ShowWindow(windowSettings.WindowHandle, 10);
+	UpdateWindow(windowSettings.WindowHandle);
 
 	return 0;
 }
 
-int CGame::InitDirectX()
+int Game::InitDirectX()
 {
+#pragma region Create_Device_and_Swapchain
 	RECT clientRect;
-	GetClientRect(m_windowSettings.m_WindowHandle, &clientRect);
+	GetClientRect(windowSettings.WindowHandle, &clientRect);
 
 	unsigned long clientWidth = clientRect.right - clientRect.left;
 	unsigned long clientHeight = clientRect.bottom - clientRect.top;
@@ -167,17 +170,13 @@ int CGame::InitDirectX()
 	swapChainDesc.BufferDesc.RefreshRate.Denominator = 0;
 	swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	swapChainDesc.OutputWindow = m_windowSettings.m_WindowHandle;
+	swapChainDesc.OutputWindow = windowSettings.WindowHandle;
 	swapChainDesc.SampleDesc.Count = 1;
 	swapChainDesc.SampleDesc.Quality = 0;
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	swapChainDesc.Windowed = true;
 
 	unsigned int createDeviceFlags = 0;
-
-#if _DEBUG
-	createDeviceFlags = D3D11_CREATE_DEVICE_DEBUG;
-#endif
 
 	D3D_FEATURE_LEVEL featureLevels[]
 	{
@@ -199,24 +198,28 @@ int CGame::InitDirectX()
 		_countof(featureLevels),
 		D3D11_SDK_VERSION,
 		&swapChainDesc,
-		&m_directXSettings.m_swapChain,
-		&m_directXSettings.m_device,
+		&directXSettings.SwapChain,
+		&directXSettings.DxDevice,
 		&featureLevel,
-		&m_directXSettings.m_deviceContext);
+		&directXSettings.DxContext);
 
 	if (FAILED(hr))
 	{
 		return -10;
 	}
+#pragma endregion
 
+
+	// Create Backbuffer
 	ID3D11Texture2D* backbuffer = {};
-	hr = m_directXSettings.m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backbuffer);
+	hr = directXSettings.SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backbuffer);
 	if (FAILED(hr))
 	{
 		return -11;
 	}
 
-	hr = m_directXSettings.m_device->CreateRenderTargetView(backbuffer, nullptr, &m_directXSettings.m_renderTargetView);
+	// Create Rendertargetview
+	hr = directXSettings.DxDevice->CreateRenderTargetView(backbuffer, nullptr, &directXSettings.RenderTargetView);
 	if (FAILED(hr))
 	{
 		return -12;
@@ -224,6 +227,7 @@ int CGame::InitDirectX()
 
 	SafeRelease(backbuffer);
 
+#pragma region Depth_stencil
 	D3D11_TEXTURE2D_DESC depthStencilBufferDesc = { 0 };
 	depthStencilBufferDesc.ArraySize = 1;
 	depthStencilBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
@@ -236,18 +240,18 @@ int CGame::InitDirectX()
 	depthStencilBufferDesc.SampleDesc.Quality = 0;
 	depthStencilBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 
-	hr = m_directXSettings.m_device->CreateTexture2D(&depthStencilBufferDesc,
+	hr = directXSettings.DxDevice->CreateTexture2D(&depthStencilBufferDesc,
 		nullptr,
-		&m_directXSettings.m_depthStencilBuffer);
+		&directXSettings.DepthStencilBuffer);
 
 	if (FAILED(hr))
 	{
 		return -13;
 	}
 
-	hr = m_directXSettings.m_device->CreateDepthStencilView(m_directXSettings.m_depthStencilBuffer,
+	hr = directXSettings.DxDevice->CreateDepthStencilView(directXSettings.DepthStencilBuffer,
 		nullptr,
-		&m_directXSettings.m_depthStencilView);
+		&directXSettings.DepthStencilView);
 
 	if (FAILED(hr))
 	{
@@ -259,202 +263,208 @@ int CGame::InitDirectX()
 	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;		// Nahe Objekte nehmen, ferne wegwerfen
 	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 
-	hr = m_directXSettings.m_device->CreateDepthStencilState(&depthStencilDesc, &m_directXSettings.m_depthStencilState);
+	hr = directXSettings.DxDevice->CreateDepthStencilState(&depthStencilDesc, &directXSettings.DepthStencilState);
 	if (FAILED(hr))
 	{
 		return -15;
 	}
+#pragma endregion
 
-	// Rasterizer Macht Vektor zu Pixel
+#pragma region Rasterizer
 	D3D11_RASTERIZER_DESC rasterdesc;
 	ZeroMemory(&rasterdesc, sizeof(D3D11_RASTERIZER_DESC));
 	rasterdesc.AntialiasedLineEnable = false;
-	rasterdesc.FillMode = D3D11_FILL_SOLID;		// Komplette Dreiecke zeigen, rumspielen!
-	rasterdesc.CullMode = D3D11_CULL_NONE;		// Rückseiten wegschneiden
+	rasterdesc.FillMode = D3D11_FILL_SOLID;
+	rasterdesc.CullMode = D3D11_CULL_NONE;
 	rasterdesc.DepthBias = 0;
 	rasterdesc.DepthBiasClamp = 0.0f;
 	rasterdesc.DepthClipEnable = true;
-	rasterdesc.FrontCounterClockwise = false;		// Dreiecke im Uhrzeigersinn zeigen nach vorne
+	rasterdesc.FrontCounterClockwise = false;
 	rasterdesc.MultisampleEnable = false;
 	rasterdesc.ScissorEnable = false;
 	rasterdesc.SlopeScaledDepthBias = 0.0f;
 
-	hr = m_directXSettings.m_device->CreateRasterizerState(&rasterdesc, &m_directXSettings.m_rasterrizerStateSolid);
+	hr = directXSettings.DxDevice->CreateRasterizerState(&rasterdesc, &directXSettings.RasterrizerStateSolid);
 	if (FAILED(hr))
 	{
 		return -16;
 	}
 
 	rasterdesc.FillMode = D3D11_FILL_WIREFRAME;
-	hr = m_directXSettings.m_device->CreateRasterizerState(&rasterdesc, &m_directXSettings.m_rasterrizerStateWireframe);
+	hr = directXSettings.DxDevice->CreateRasterizerState(&rasterdesc, &directXSettings.RasterrizerStateWireframe);
 	if (FAILED(hr))
 	{
 		return -17;
 	}
 
-	m_directXSettings.m_currentRasterrizerState = m_directXSettings.m_rasterrizerStateSolid;
+	directXSettings.CurrentRasterrizerState = directXSettings.RasterrizerStateSolid;
 
-	m_directXSettings.m_viewPort.Width = clientWidth;
-	m_directXSettings.m_viewPort.Height = clientHeight;
-	m_directXSettings.m_viewPort.TopLeftX = 0.0f;
-	m_directXSettings.m_viewPort.TopLeftY = 0.0f;
-	m_directXSettings.m_viewPort.MinDepth = 0.0f;
-	m_directXSettings.m_viewPort.MaxDepth = 1.0f;
+	directXSettings.ViewPort.Width = clientWidth;
+	directXSettings.ViewPort.Height = clientHeight;
+	directXSettings.ViewPort.TopLeftX = 0.0f;
+	directXSettings.ViewPort.TopLeftY = 0.0f;
+	directXSettings.ViewPort.MinDepth = 0.0f;
+	directXSettings.ViewPort.MaxDepth = 1.0f;
+#pragma endregion
 
 	return 0;
 }
 
-int CGame::InitConstantBuffers()
+int Game::InitConstantBuffers()
 {
 	D3D11_BUFFER_DESC constantBuffer = { 0 };
 	constantBuffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	constantBuffer.ByteWidth = sizeof(SStandardConstantBuffer);
+	constantBuffer.ByteWidth = sizeof(StandardConstantBuffer);
 	constantBuffer.Usage = D3D11_USAGE_DEFAULT;
 
-	HRESULT hr = m_directXSettings.m_device->CreateBuffer(&constantBuffer, nullptr, &m_directXSettings.m_constantBuffers[CB_APPLICATION]);
+	// Create Application constant buffer
+	HRESULT hr = directXSettings.DxDevice->CreateBuffer(&constantBuffer, nullptr, &directXSettings.ConstantBuffers[CB_APPLICATION]);
 	FAILHR(-40);
-	hr = m_directXSettings.m_device->CreateBuffer(&constantBuffer, nullptr, &m_directXSettings.m_constantBuffers[CB_FRAME]);
+	// Create Frame constant buffer
+	hr = directXSettings.DxDevice->CreateBuffer(&constantBuffer, nullptr, &directXSettings.ConstantBuffers[CB_FRAME]);
 	FAILHR(-41);
-	hr = m_directXSettings.m_device->CreateBuffer(&constantBuffer, nullptr, &m_directXSettings.m_constantBuffers[CB_OBJECT]);
+	// Create Object constant buffer
+	hr = directXSettings.DxDevice->CreateBuffer(&constantBuffer, nullptr, &directXSettings.ConstantBuffers[CB_OBJECT]);
 	FAILHR(-42);
-
-	constantBuffer.ByteWidth = sizeof(SLightConstantBuffer);
-	hr = m_directXSettings.m_device->CreateBuffer(&constantBuffer, nullptr, &m_directXSettings.m_constantBuffers[CB_LIGHT]);
+	// Create Light constant buffer
+	constantBuffer.ByteWidth = sizeof(LightConstantBuffer);
+	hr = directXSettings.DxDevice->CreateBuffer(&constantBuffer, nullptr, &directXSettings.ConstantBuffers[CB_LIGHT]);
 	FAILHR(-43);
 
 	RECT clientRect;
-	GetClientRect(m_windowSettings.m_WindowHandle, &clientRect);
+	GetClientRect(windowSettings.WindowHandle, &clientRect);
 	float clientHeight = clientRect.bottom - clientRect.top;
 	float clientWidth = clientRect.right - clientRect.left;
 
-
-	m_applicationConstantBuffer.m_matrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(60), clientWidth / clientHeight, 0.1f, 100.0f);
-
-	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_APPLICATION], 0, nullptr, &m_applicationConstantBuffer, 0, 0);
+	// Set Camera FOV and application buffer
+	applicationConstantBuffer.Matrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(60), clientWidth / clientHeight, 0.1f, 100.0f);
+	directXSettings.DxContext->UpdateSubresource(directXSettings.ConstantBuffers[CB_APPLICATION], 0, nullptr, &applicationConstantBuffer, 0, 0);
 
 	return 0;
 }
 
-void CGame::ClearBackBuffer(const float _clearColor[4], float _clearDepth, UINT8 _clearStencil)
+void Game::ClearBackBuffer(const float _clearColor[4], float _clearDepth, UINT8 _clearStencil)
 {
-	m_directXSettings.m_deviceContext->ClearRenderTargetView(m_directXSettings.m_renderTargetView, _clearColor);
-	m_directXSettings.m_deviceContext->ClearDepthStencilView(m_directXSettings.m_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, _clearDepth, _clearStencil);
+	directXSettings.DxContext->ClearRenderTargetView(directXSettings.RenderTargetView, _clearColor);
+	directXSettings.DxContext->ClearDepthStencilView(directXSettings.DepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, _clearDepth, _clearStencil);
 }
 
-void CGame::Render()
+void Game::Render()
 {
 	// Hardware Check
-	assert(m_directXSettings.m_device);
-	assert(m_directXSettings.m_deviceContext);
+	assert(directXSettings.DxDevice);
+	assert(directXSettings.DxContext);
 
 	// Backbuffer clear
 	ClearBackBuffer(Colors::Navy, 1.0f, 0);
 
 #pragma region Update Frame ConstantBuffer
 	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(
-		XMConvertToRadians(m_camRot.x),
-		XMConvertToRadians(m_camRot.y),
-		XMConvertToRadians(m_camRot.z));
+		XMConvertToRadians(CamRot.x),
+		XMConvertToRadians(CamRot.y),
+		XMConvertToRadians(CamRot.z));
 
-	XMMATRIX position = XMMatrixTranslation(m_camPos.x, m_camPos.y, m_camPos.z);
+	XMMATRIX position = XMMatrixTranslation(CamPos.x, CamPos.y, CamPos.z);
 
-	m_frameConstantBuffer.m_matrix = XMMatrixInverse(nullptr, XMMatrixMultiply(rotation, position));
+	frameConstantBuffer.Matrix = XMMatrixInverse(nullptr, XMMatrixMultiply(rotation, position));
 
-	m_directXSettings.m_deviceContext->UpdateSubresource(m_directXSettings.m_constantBuffers[CB_FRAME], 0, nullptr, &m_frameConstantBuffer, 0, 0);
+	directXSettings.DxContext->UpdateSubresource(directXSettings.ConstantBuffers[CB_FRAME], 0, nullptr, &frameConstantBuffer, 0, 0);
 #pragma endregion
 
-	m_contentManager.Render();
+	contentManager.Render();
 
-	m_directXSettings.m_swapChain->Present(1, 0);
+	directXSettings.SwapChain->Present(1, 0);
 }
 
-int CGame::Start()
+int Game::Start()
 {
-	m_camPos = XMFLOAT3(0, 0, -5);
+	CamPos = XMFLOAT3(0, 1.5f, -5);
 
 	CTM.CreateSkyBox();
 
 #pragma region Grass_Cube_Normalmap
-	CEntity* CubeObject = new CEntity(XMFLOAT3(0, 0, 0));
+	Entity* CubeObject = new Entity(XMFLOAT3(0, 0, 0));
 	SHC.CreateCube(CubeObject->AddComponent<CMesh>());
-	CubeObject->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
-		L"NormalmapPixelShader.cso", L"NormalmapVertexShader.cso", new CTexture(L"..\\assets\\Grass.jpg", Albedo), new CTexture(L"..\\assets\\GrassNormal.jpg", Normalmap)));
+	CubeObject->GetComponent<CMesh>()->SetMaterial(new Material(DXS.DxDevice, DXS.DxContext,
+		L"NormalmapPixelShader.cso", L"NormalmapVertexShader.cso", new Texture(L"..\\assets\\Grass.jpg", Albedo), new Texture(L"..\\assets\\GrassNormal.jpg", Normalmap)));
 
-	CTM.AddEntity(CubeObject);			// !IMPORTANT! Add Entity to Content Manager  
+	CTM.AddEntity(CubeObject);			// !IMPORTANT! Add Entity to Content Manager
 #pragma endregion
 
 #pragma region Oktaeder
-	CEntity* OktaederObject = new CEntity(XMFLOAT3(-1, 0, 0));
+	Entity* OktaederObject = new Entity(XMFLOAT3(-1, 0, 0));
 	SHC.CreateOktaeder(OktaederObject->AddComponent<CMesh>(), XMFLOAT4(0.79f, 0.57f, 0.66f, 1.0f));
-	OktaederObject->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
-		L"SimplePixelShader.cso", L"SimpleVertexShader.cso", new CTexture(L"..\\assets\\DefaultTexture.png", Albedo), nullptr));
+	OktaederObject->GetComponent<CMesh>()->SetMaterial(new Material(DXS.DxDevice, DXS.DxContext,
+		L"SimplePixelShader.cso", L"SimpleVertexShader.cso", new Texture(L"..\\assets\\DefaultTexture.png", Albedo), nullptr));
 
-	CTM.AddEntity(OktaederObject);		// !IMPORTANT! Add Entity to Content Manager  
+	CTM.AddEntity(OktaederObject);		// !IMPORTANT! Add Entity to Content Manager
+#pragma endregion
+
+#pragma region Textured_Plane
+	Entity* TexturedPlane = new Entity(XMFLOAT3(1, 0, 0));
+	SHC.CreatePlane(TexturedPlane->AddComponent<CMesh>());
+	TexturedPlane->GetComponent<CMesh>()->SetMaterial(new Material(DXS.DxDevice, DXS.DxContext,
+		L"NormalmapPixelShader.cso", L"NormalmapVertexShader.cso", new Texture(L"..\\assets\\Leather.jpg", Albedo), new Texture(L"..\\assets\\LeatherNormal.jpg", Normalmap)));
+
+	CTM.AddEntity(TexturedPlane);		// !IMPORTANT! Add Entity to Content Manager  
+
+	TexturedPlane->p_transform->Rotation = XMFLOAT3(-45, 0, 0);
 #pragma endregion
 
 #pragma region Glossy_Sphere
-	CEntity* SphereObject = new CEntity(XMFLOAT3(-1, 1, 0));
+	Entity* SphereObject = new Entity(XMFLOAT3(-1, 1, 0));
 	SHC.CreateSphere(SphereObject->AddComponent<CMesh>(), 40, 40, XMFLOAT4(1, 0, 0, 1));
-	SphereObject->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
-		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", new CTexture(L"..\\assets\\DefaultTexture.png", Albedo), nullptr));
+	SphereObject->GetComponent<CMesh>()->SetMaterial(new Material(DXS.DxDevice, DXS.DxContext,
+		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", new Texture(L"..\\assets\\DefaultTexture.png", Albedo), nullptr));
 
 	CTM.AddEntity(SphereObject);		// !IMPORTANT! Add Entity to Content Manager
-	SphereObject->GetComponent<CMesh>()->p_material->smoothness = 1;
+	SphereObject->GetComponent<CMesh>()->p_Material->Smoothness = 1;
 #pragma endregion
 
 #pragma region Matte_Sphere
-	CEntity* MatteSphereObject = new CEntity(XMFLOAT3(0, 1, 0));
+	Entity* MatteSphereObject = new Entity(XMFLOAT3(0, 1, 0));
 	SHC.CreateSphere(MatteSphereObject->AddComponent<CMesh>(), 40, 40, XMFLOAT4(1, 0, 0, 1));
-	MatteSphereObject->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
-		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", new CTexture(L"..\\assets\\DefaultTexture.png", Albedo), nullptr));
+	MatteSphereObject->GetComponent<CMesh>()->SetMaterial(new Material(DXS.DxDevice, DXS.DxContext,
+		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", new Texture(L"..\\assets\\DefaultTexture.png", Albedo), nullptr));
 
 	CTM.AddEntity(MatteSphereObject);		// !IMPORTANT! Add Entity to Content Manager
-	MatteSphereObject->GetComponent<CMesh>()->p_material->smoothness = 0;
+	MatteSphereObject->GetComponent<CMesh>()->p_Material->Smoothness = 0;
 #pragma endregion
 
 #pragma region Stone_Textured_Sphere
-	CEntity* NoNormalMapSphere = new CEntity(XMFLOAT3(-1, 2, 0));
+	Entity* NoNormalMapSphere = new Entity(XMFLOAT3(-1, 2, 0));
 	SHC.CreateSphere(NoNormalMapSphere->AddComponent<CMesh>(), 40, 40);
-	NoNormalMapSphere->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
-		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", new CTexture(L"..\\assets\\Stones.jpg", Albedo), nullptr));
+	NoNormalMapSphere->GetComponent<CMesh>()->SetMaterial(new Material(DXS.DxDevice, DXS.DxContext,
+		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", new Texture(L"..\\assets\\Stones.jpg", Albedo), nullptr));
 
 	CTM.AddEntity(NoNormalMapSphere);		// !IMPORTANT! Add Entity to Content Manager  
 #pragma endregion
 
 #pragma region Stone_Normalmap_Shere
-	CEntity* NormalMapSphere = new CEntity(XMFLOAT3(0, 2, 0));
+	Entity* NormalMapSphere = new Entity(XMFLOAT3(0, 2, 0));
 	SHC.CreateSphere(NormalMapSphere->AddComponent<CMesh>(), 40, 40);
-	NormalMapSphere->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
-		L"NormalmapPixelShader.cso", L"NormalmapVertexShader.cso", new CTexture(L"..\\assets\\Stones.jpg", Albedo), new CTexture(L"..\\assets\\StonesNormal.jpg", Normalmap)));
+	NormalMapSphere->GetComponent<CMesh>()->SetMaterial(new Material(DXS.DxDevice, DXS.DxContext,
+		L"NormalmapPixelShader.cso", L"NormalmapVertexShader.cso", new Texture(L"..\\assets\\Stones.jpg", Albedo), new Texture(L"..\\assets\\StonesNormal.jpg", Normalmap)));
 
 	CTM.AddEntity(NormalMapSphere);		// !IMPORTANT! Add Entity to Content Manager  
 #pragma endregion
 
 #pragma region Sand_Normalmap_Sphere
-	CEntity* SandNormalmapSphere = new CEntity(XMFLOAT3(0, 3, 0));
+	Entity* SandNormalmapSphere = new Entity(XMFLOAT3(0, 3, 0));
 	SHC.CreateSphere(SandNormalmapSphere->AddComponent<CMesh>(), 40, 40);
-	SandNormalmapSphere->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
-		L"NormalmapPixelShader.cso", L"NormalmapVertexShader.cso", new CTexture(L"..\\assets\\Sand.jpg", Albedo), new CTexture(L"..\\assets\\SandNormal.jpg", Normalmap)));
+	SandNormalmapSphere->GetComponent<CMesh>()->SetMaterial(new Material(DXS.DxDevice, DXS.DxContext,
+		L"NormalmapPixelShader.cso", L"NormalmapVertexShader.cso", new Texture(L"..\\assets\\Sand.jpg", Albedo), new Texture(L"..\\assets\\SandNormal.jpg", Normalmap)));
 
 	CTM.AddEntity(SandNormalmapSphere);		// !IMPORTANT! Add Entity to Content Manager  
 #pragma endregion
 
 #pragma region Sand_Textured_Sphere
-	CEntity* SandSphere = new CEntity(XMFLOAT3(-1, 3, 0));
+	Entity* SandSphere = new Entity(XMFLOAT3(-1, 3, 0));
 	SHC.CreateSphere(SandSphere->AddComponent<CMesh>(), 40, 40);
-	SandSphere->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
-		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", new CTexture(L"..\\assets\\Sand.jpg", Albedo), nullptr));
+	SandSphere->GetComponent<CMesh>()->SetMaterial(new Material(DXS.DxDevice, DXS.DxContext,
+		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", new Texture(L"..\\assets\\Sand.jpg", Albedo), nullptr));
 
 	CTM.AddEntity(SandSphere);		// !IMPORTANT! Add Entity to Content Manager  
-#pragma endregion
-
-#pragma region Textured_Plane
-	CEntity* TexturedPlane = new CEntity(XMFLOAT3(0, -2, 0));
-	SHC.CreatePlane(TexturedPlane->AddComponent<CMesh>());
-	TexturedPlane->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
-		L"TexturedPixelShader.cso", L"TexturedVertexShader.cso", new CTexture(L"..\\assets\\test.png", Albedo), nullptr));
-
-	CTM.AddEntity(TexturedPlane);		// !IMPORTANT! Add Entity to Content Manager  
 #pragma endregion
 
 	CTM.Start();
@@ -462,27 +472,27 @@ int CGame::Start()
 	return 0;
 }
 
-void CGame::Update(float _deltaTime)
+void Game::Update(float _deltaTime)
 {
 	// Check for input
-	m_inputManager.DetectInput();
+	inputManager.DetectInput();
 
 	// Shutdown application
-	if (m_inputManager.GetKeyDown(DIK_ESCAPE))
-		m_isRunning = false;
+	if (inputManager.GetKeyDown(DIK_ESCAPE))
+		isRunning = false;
 
 #pragma region Camera_Movement
 
-	movementSpeed = Clamp(movementSpeed + m_inputManager.GetMouseWheel() * 0.005, 1, 10);
+	movementSpeed = Clamp(movementSpeed + inputManager.GetMouseWheel() * 0.005, 1, 10);
 
 	XMVECTOR f = { 0, 0, 1, 0 };
 	XMVECTOR r = { 1, 0, 0, 0 };
 	XMVECTOR u = { 0, 1, 1, 0 };
 
 	XMMATRIX m = XMMatrixRotationRollPitchYaw(
-		XMConvertToRadians(m_camRot.x),
-		XMConvertToRadians(m_camRot.y),
-		XMConvertToRadians(m_camRot.z));
+		XMConvertToRadians(CamRot.x),
+		XMConvertToRadians(CamRot.y),
+		XMConvertToRadians(CamRot.z));
 
 	f = XMVector3Transform(f, m);
 	r = XMVector3Transform(r, m);
@@ -494,32 +504,32 @@ void CGame::Update(float _deltaTime)
 
 	XMFLOAT3 camMovement = XMFLOAT3(0, 0, 0);
 
-	if (m_inputManager.GetKey(DIK_W))
+	if (inputManager.GetKey(DIK_W))
 		camMovement = camMovement + forward;
-	if (m_inputManager.GetKey(DIK_S))
+	if (inputManager.GetKey(DIK_S))
 		camMovement = camMovement - forward;
-	if (m_inputManager.GetKey(DIK_A))
+	if (inputManager.GetKey(DIK_A))
 		camMovement = camMovement - right;
-	if (m_inputManager.GetKey(DIK_D))
+	if (inputManager.GetKey(DIK_D))
 		camMovement = camMovement + right;
-	if (m_inputManager.GetKey(DIK_LCONTROL))
+	if (inputManager.GetKey(DIK_LCONTROL))
 		camMovement.y -= 1;
-	if (m_inputManager.GetKey(DIK_SPACE))
+	if (inputManager.GetKey(DIK_SPACE))
 		camMovement.y += 1;
 
-	m_camPos = m_camPos + camMovement * _deltaTime * movementSpeed;
+	CamPos = CamPos + camMovement * _deltaTime * movementSpeed;
 
-	if (m_inputManager.GetMouseKey(1))
+	if (inputManager.GetMouseKey(1))
 	{
-		XMFLOAT2 mouseDelta = m_inputManager.GetMouseMovement();
-		m_camRot.x += mouseDelta.y * _deltaTime * rotationSpeed;
-		m_camRot.y += mouseDelta.x * _deltaTime * rotationSpeed;
+		XMFLOAT2 mouseDelta = inputManager.GetMouseMovement();
+		CamRot.x += mouseDelta.y * _deltaTime * rotationSpeed;
+		CamRot.y += mouseDelta.x * _deltaTime * rotationSpeed;
 	}
 #pragma endregion
 
 #pragma region Experimental_Testing
 	// Change rasterizerstate
-	if (m_inputManager.GetKeyDown(DIK_1))
+	if (inputManager.GetKeyDown(DIK_1))
 		SwitchRasterizerState();
 
 	// Rotate all objects
@@ -539,12 +549,10 @@ void CGame::Update(float _deltaTime)
 		CTM.Resize = true;
 	else if (IPM.GetKeyUp(DIK_4))
 		CTM.Resize = false;
-
-
 #pragma endregion
 
 	// Update entities
-	m_contentManager.Update(_deltaTime);
+	contentManager.Update(_deltaTime);
 }
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam)

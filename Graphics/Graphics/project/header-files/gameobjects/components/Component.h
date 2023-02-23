@@ -1,16 +1,15 @@
 #pragma once
 #include "../../misc/GraphicsPCH.h"
 
-class CEntity;
+class Entity;
 
-class CComponent
+class Component
 {
 public:
-	CComponent();
-	CComponent(CEntity* _p_entity) 
+	Component(Entity* _p_entity) 
 	{
 		p_Entity = _p_entity;
-		isActive = true;
+		IsActive = true;
 	}
 
 	virtual bool Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext) = 0;
@@ -19,11 +18,11 @@ public:
 	virtual bool DeInit() = 0;
 
 public:
-	CEntity* p_Entity;
-	bool isActive;
+	Entity* p_Entity;
+	bool IsActive;
 
 protected:
-	ID3D11Device* p_dxdevice;
-	ID3D11DeviceContext* p_dxcontext;
+	ID3D11Device* p_dxdevice = nullptr;
+	ID3D11DeviceContext* p_dxcontext = nullptr;
 };
 

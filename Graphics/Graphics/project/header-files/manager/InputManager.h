@@ -5,7 +5,7 @@
 
 #include <dinput.h>
 
-class CInputManager
+class InputManager
 {
 public:
 	/// <summary>
@@ -29,29 +29,54 @@ public:
 	/// <param name="_keyID"></param>
 	/// <returns></returns>
 	bool GetKey(int _keyID);
+	/// <summary>
+	/// True when a key is released
+	/// </summary>
+	/// <param name="_keyID"></param>
+	/// <returns></returns>
 	bool GetKeyUp(int _keyID);
+	/// <summary>
+	/// True when a key is pressed
+	/// </summary>
+	/// <param name="_keyID"></param>
+	/// <returns></returns>
 	bool GetKeyDown(int _keyID);
 
-	inline XMFLOAT2 GetMousePos() { return  m_mousePos; }
+	inline XMFLOAT2 GetMousePos() { return  mousePos; }
 	XMFLOAT2 GetMouseMovement();
 	float GetMouseWheel();
 
+	/// <summary>
+	/// True while a mousekey is pressed
+	/// </summary>
+	/// <param name="_keyID"></param>
+	/// <returns></returns>
 	bool GetMouseKey(int _keyID);
+	/// <summary>
+	/// True when a mousekey is released
+	/// </summary>
+	/// <param name="_keyID"></param>
+	/// <returns></returns>
 	bool GetMouseKeyUp(int _keyID);
+	/// <summary>
+	/// True when a mousekey is pressed
+	/// </summary>
+	/// <param name="_keyID"></param>
+	/// <returns></returns>
 	bool GetMouseKeyDown(int _keyID);
 
 private:
-	IDirectInputDevice8* m_mouse;
-	IDirectInputDevice8* m_keyboard;
+	IDirectInputDevice8* mouse;
+	IDirectInputDevice8* keyboard;
 
-	LPDIRECTINPUT8 m_directInput;
+	LPDIRECTINPUT8 directInput;
 
-	DIMOUSESTATE m_currentMouseSate;
-	DIMOUSESTATE m_lastMouseSate;
+	DIMOUSESTATE currentMouseSate;
+	DIMOUSESTATE lastMouseSate;
 
-	BYTE m_currentKeyboardState[256];
-	BYTE m_lastKeyboardState[256];
+	BYTE currentKeyboardState[256];
+	BYTE lastKeyboardState[256];
 
-	XMFLOAT2 m_mousePos;
+	XMFLOAT2 mousePos;
 };
 

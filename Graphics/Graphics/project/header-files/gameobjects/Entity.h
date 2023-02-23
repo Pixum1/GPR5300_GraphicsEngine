@@ -5,13 +5,12 @@
 #include "../misc/ConstantBuffer.h"
 #include "Transform.h"
 
-class CComponent;
+class Component;
 
-class CEntity
+class Entity
 {
 public:
-	CEntity(XMFLOAT3 _pos = XMFLOAT3(0,0,0), XMFLOAT3 _rot = XMFLOAT3(0,0,0));
-	virtual ~CEntity();
+	Entity(XMFLOAT3 _pos = XMFLOAT3(0,0,0));
 
 	/// <summary>
 	/// Initializes the transform and all components
@@ -54,21 +53,21 @@ public:
 	void Resize(float _deltatime);
 
 public:
-	CTransform* p_transform;
+	Transform* p_transform;
 
 private:
-	float m_time = 0;				// Used for testing in Move()
-	XMFLOAT3 m_startPos;				// Used for testing in Move()
-	std::vector<CComponent*> AllComponents;
+	float time = 0;						// Used for testing in Move()
+	XMFLOAT3 startPos;				// Used for testing in Move()
+	std::vector<Component*> allComponents;
 
 protected:
-	bool m_InValid = false;
+	bool inValid = false;
 };
 
 template<typename T>
-inline T* CEntity::GetComponent()
+inline T* Entity::GetComponent()
 {
-	for (CComponent* c : AllComponents)
+	for (Component* c : allComponents)
 	{
 		if (T* component = dynamic_cast<T*>(c))
 		{
@@ -79,12 +78,12 @@ inline T* CEntity::GetComponent()
 }
 
 template<typename T>
-inline T* CEntity::AddComponent()
+inline T* Entity::AddComponent()
 {
-	if (std::is_base_of<CComponent, T>::value)
+	if (std::is_base_of<Component, T>::value)
 	{
 		T* c = new T(this);
-		AllComponents.push_back(c);
+		allComponents.push_back(c);
 		return c;
 	}
 	return nullptr;

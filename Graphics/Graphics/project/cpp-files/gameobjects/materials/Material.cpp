@@ -2,7 +2,7 @@
 #include "../../../header-files/gameobjects/materials/Texture.h"
 #include "../../../header-files/gameobjects/materials/Cubemap.h"
 
-int CMaterial::Init()
+int Material::Init()
 {
 	// Initialize textures
 	if (p_albedo != nullptr)
@@ -14,7 +14,7 @@ int CMaterial::Init()
 	return 0;
 }
 
-int CMaterial::Start()
+int Material::Start()
 {
 	// Start textures
 	if (p_albedo != nullptr)
@@ -30,19 +30,19 @@ int CMaterial::Start()
 	return 0;
 }
 
-void CMaterial::Render()
+void Material::Render()
 {
 #pragma region Update Light Constant Buffer
-	SLightConstantBuffer lightBuffer = {};
+	LightConstantBuffer lightBuffer = {};
 
 	// Update Light properties
-	lightBuffer.AmbientColor = GetGame->m_ambientLight;
+	lightBuffer.AmbientColor = GetGame->AmbientLight;
 	lightBuffer.DiffuseColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1);
-	lightBuffer.SpecularColor = XMFLOAT4(1.0f, 1.0f, 1.0f, smoothness);
-	lightBuffer.CameraPos = GetGame->m_camPos;
-	lightBuffer.LightDir = GetGame->m_lightDirection;
+	lightBuffer.SpecularColor = XMFLOAT4(1.0f, 1.0f, 1.0f, Smoothness);
+	lightBuffer.CameraPos = GetGame->CamPos;
+	lightBuffer.LightDir = GetGame->LightDirection;
 
-	p_dxcontext->UpdateSubresource(DXS.m_constantBuffers[CB_LIGHT], 0, nullptr, &lightBuffer, 0, 0);
+	p_dxcontext->UpdateSubresource(DXS.ConstantBuffers[CB_LIGHT], 0, nullptr, &lightBuffer, 0, 0);
 #pragma endregion
 
 	// Vertex Shader
@@ -59,7 +59,7 @@ void CMaterial::Render()
 	if (p_normal != nullptr)
 		p_normal->Update();
 }
-bool CMaterial::DeInit()
+bool Material::DeInit()
 {
 	SafeRelease(p_inputLayout);
 	SafeRelease(p_vertexShader);
@@ -71,7 +71,7 @@ bool CMaterial::DeInit()
 	return false;
 }
 
-int CMaterial::CreateInputLayout(ID3DBlob* _p_vertexBlob)
+int Material::CreateInputLayout(ID3DBlob* _p_vertexBlob)
 {
 	D3D11_INPUT_ELEMENT_DESC vertexLayoutDesc[] =
 	{
@@ -80,7 +80,7 @@ int CMaterial::CreateInputLayout(ID3DBlob* _p_vertexBlob)
 			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
 			DXGI_FORMAT_R32G32B32_FLOAT,	// Float3
 			0,								// Falls mehr als ein VertexShader vorhanden ist
-			offsetof(SVertexData, Position),
+			offsetof(VertexData, Position),
 			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
 			0
 		},
@@ -89,7 +89,7 @@ int CMaterial::CreateInputLayout(ID3DBlob* _p_vertexBlob)
 			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
 			DXGI_FORMAT_R32G32B32_FLOAT,	// Float3
 			0,								// Falls mehr als ein VertexShader vorhanden ist
-			offsetof(SVertexData, Normal),
+			offsetof(VertexData, Normal),
 			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
 			0
 		},
@@ -98,7 +98,7 @@ int CMaterial::CreateInputLayout(ID3DBlob* _p_vertexBlob)
 			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
 			DXGI_FORMAT_R32G32B32A32_FLOAT,	// Float4
 			0,								// Falls mehr als ein VertexShader vorhanden ist
-			offsetof(SVertexData, Color),
+			offsetof(VertexData, Color),
 			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
 			0
 		},
@@ -107,7 +107,7 @@ int CMaterial::CreateInputLayout(ID3DBlob* _p_vertexBlob)
 			0,								// Semantic index, falls es mehr als eins von diesem Typen vorhanden ist
 			DXGI_FORMAT_R32G32_FLOAT,		// Float2
 			0,								// Falls mehr als ein VertexShader vorhanden ist
-			offsetof(SVertexData, UV),
+			offsetof(VertexData, UV),
 			D3D11_INPUT_PER_VERTEX_DATA,	// Werte einzeln für jeden Vertex nacheinander übergeben
 			0
 		}
@@ -123,7 +123,7 @@ int CMaterial::CreateInputLayout(ID3DBlob* _p_vertexBlob)
 	return 0;
 }
 
-int CMaterial::CreateVertexShader()
+int Material::CreateVertexShader()
 {
 	ID3DBlob* shaderBlob;
 
@@ -139,7 +139,7 @@ int CMaterial::CreateVertexShader()
 	return 0;
 }
 
-int CMaterial::CreatePixelShader()
+int Material::CreatePixelShader()
 {
 	ID3DBlob* shaderBlob;
 

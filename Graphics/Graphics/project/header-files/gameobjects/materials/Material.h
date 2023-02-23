@@ -2,14 +2,14 @@
 #include "../../misc/GraphicsPCH.h"
 #include "../../Game.h"
 
-class STextureData;
-class CTexture;
-class CCubemap;
+class TextureData;
+class Texture;
+class Cubemap;
 
-class CMaterial
+class Material
 {
 public:
-	CMaterial(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext, LPCWSTR _pixelShaderName, LPCWSTR _vertexShaderName, CTexture* _p_albedoTex, CTexture* _p_normalTex)
+	Material(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext, LPCWSTR _pixelShaderName, LPCWSTR _vertexShaderName, Texture* _p_albedoTex, Texture* _p_normalTex)
 	{
 		p_dxdevice = _p_dxdevice;
 		p_dxcontext = _p_dxcontext;
@@ -62,11 +62,11 @@ protected:
 
 	// Variables
 public:
-	float smoothness;
+	float Smoothness;
 
 protected:
-	CTexture* p_albedo = nullptr;
-	CTexture* p_normal = nullptr;
+	Texture* p_albedo = nullptr;
+	Texture* p_normal = nullptr;
 
 	ID3D11InputLayout* p_inputLayout = nullptr;
 	ID3D11VertexShader* p_vertexShader = nullptr;
@@ -74,8 +74,8 @@ protected:
 
 	ID3D11ShaderResourceView* p_shaderResourceView = nullptr;
 
-	ID3D11Device* p_dxdevice;
-	ID3D11DeviceContext* p_dxcontext;
+	ID3D11Device* p_dxdevice = nullptr;
+	ID3D11DeviceContext* p_dxcontext = nullptr;
 
 	LPCWSTR pixelShaderName;
 	LPCWSTR vertexShaderName;

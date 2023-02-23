@@ -4,37 +4,30 @@
 #include "../../header-files/gameobjects/components/Component.h"
 #include "../../header-files/misc/MathHelper.h"
 
-CEntity::CEntity(XMFLOAT3 _pos, XMFLOAT3 _rot)
+Entity::Entity(XMFLOAT3 _pos)
 {
-	p_transform = new CTransform();
+	p_transform = new Transform();
 	p_transform->Position = _pos;
-	p_transform->Rotation = _rot;
 
-	m_startPos = _pos;
+	startPos = _pos;
 }
 
-CEntity::~CEntity()
+bool Entity::Init()
 {
-
-}
-
-bool CEntity::Init()
-{
-	if (m_InValid)
+	if (inValid)
 		return false;
 
-	for (CComponent* c : AllComponents)
+	for (Component* c : allComponents)
 	{
-		c->Init(DXS.m_device, DXS.m_deviceContext);
+		c->Init(DXS.DxDevice, DXS.DxContext);
 	}
 
 	return true;
-
 }
 
-bool CEntity::Start()
+bool Entity::Start()
 {
-	for (CComponent* c : AllComponents)
+	for (Component* c : allComponents)
 	{
 		c->Start();
 	}
@@ -42,41 +35,44 @@ bool CEntity::Start()
 	return true;
 }
 
-void CEntity::Update(float _deltaTime)
+void Entity::Update(float _deltaTime)
 {
 	p_transform->Update();
 
-	for (CComponent* c : AllComponents)
+	for (Component* c : allComponents)
 	{
 		c->Update();
 	}
 }
 
-void CEntity::DeInit()
+void Entity::DeInit()
 {
-	for (CComponent* c : AllComponents)
+	for (Component* c : allComponents)
 	{
 		c->DeInit();
 	}
 }
 
-void CEntity::Move(float _deltaTime)
+#pragma region Experimental
+void Entity::Move(float _deltaTime)
 {
-	m_time += _deltaTime;
+	time += _deltaTime;
 
-	p_transform->Position.y = m_startPos.y + (0.5f * sin(m_time));
+	p_transform->Position.y = startPos.y + (0.5f * sin(time));
 }
 
-void CEntity::Rotate(float _deltaTime)
+void Entity::Rotate(float _deltaTime)
 {
 	p_transform->Rotation.x += 20 * _deltaTime;
 	p_transform->Rotation.y += 20 * _deltaTime;
 	p_transform->Rotation.z += 20 * _deltaTime;
 }
 
-void CEntity::Resize(float _deltatime)
+void Entity::Resize(float _deltatime)
 {
-	m_time += _deltatime;
+	time += _deltatime;
 
-	p_transform->Scale = XMFLOAT3(1,1,1) + XMFLOAT3(0.5f, 0.5f, 0.5f) * sin(m_time);
+	p_transform->Scale = XMFLOAT3(1, 1, 1) + XMFLOAT3(0.5f, 0.5f, 0.5f) * sin(time);
 }
+#pragma endregion
+

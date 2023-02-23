@@ -1,12 +1,12 @@
 #pragma once
 #include "GraphicsPCH.h"
 
-struct SStandardConstantBuffer
+struct StandardConstantBuffer
 {
-	XMMATRIX m_matrix;
+	XMMATRIX Matrix;
 };
 
-struct SLightConstantBuffer
+struct LightConstantBuffer
 {
 	XMFLOAT4 AmbientColor;
 

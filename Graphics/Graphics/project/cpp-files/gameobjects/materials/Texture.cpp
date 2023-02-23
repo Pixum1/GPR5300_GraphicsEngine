@@ -1,7 +1,7 @@
 #include "../../../header-files/gameobjects/materials/Texture.h"
 #include "../../../header-files/Game.h"
 
-int CTexture::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
+int Texture::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
 {
 	p_dxdevice = _p_dxdevice;
 	p_dxcontext = _p_dxcontext;
@@ -11,7 +11,7 @@ int CTexture::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
     return 0;
 }
 
-int CTexture::Start()
+int Texture::Start()
 {
 	// Load and create texture
 	HRESULT hr = CreateWICTextureFromFile(p_dxdevice, fileName, &p_texture, &p_shaderResourceView);
@@ -41,16 +41,16 @@ int CTexture::Start()
 	return 0;
 }
 
-int CTexture::Update()
+int Texture::Update()
 {
 	// Update Shader samplers and ressources
-	p_dxcontext->PSSetSamplers(m_textureType, 1, &p_textureSampler);
-	p_dxcontext->PSSetShaderResources(m_textureType, 1, &p_shaderResourceView);
+	p_dxcontext->PSSetSamplers(textureType, 1, &p_textureSampler);
+	p_dxcontext->PSSetShaderResources(textureType, 1, &p_shaderResourceView);
 
     return 0;
 }
 
-int CTexture::DeInit()
+int Texture::DeInit()
 {
 	SafeRelease(p_dxdevice);
 	SafeRelease(p_dxcontext);

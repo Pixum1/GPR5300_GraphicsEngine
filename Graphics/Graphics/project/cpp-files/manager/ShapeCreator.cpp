@@ -1,46 +1,46 @@
 #include "../../header-files/misc/GraphicsPCH.h"
 #include "../../header-files/manager/ShapeCreator.h"
 
-void CShapeCreator::CreateCube(CMesh* _p_mesh, XMFLOAT4 _color)
+void ShapeCreator::CreateCube(CMesh* _p_mesh, XMFLOAT4 _color)
 {
-	_p_mesh->m_vertexCount = 4 * 6;
-	_p_mesh->m_indexCount = 6 * 6;
+	_p_mesh->VertexCount = 4 * 6;
+	_p_mesh->IndexCount = 6 * 6;
 
-	_p_mesh->Vertices = new SVertexData[_p_mesh->m_vertexCount];
-	_p_mesh->Indices = new WORD[_p_mesh->m_indexCount];
+	_p_mesh->Vertices = new VertexData[_p_mesh->VertexCount];
+	_p_mesh->Indices = new WORD[_p_mesh->IndexCount];
 
 	int i = 0;
-	// oben
+	// up
 	_p_mesh->Vertices[i++] = { XMFLOAT3(-0.5f, 0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f),_color, XMFLOAT2(0.5f, 0)};
 	_p_mesh->Vertices[i++] = { XMFLOAT3(0.5f, 0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f), _color, XMFLOAT2(1, 0)};
 	_p_mesh->Vertices[i++] = { XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f), _color, XMFLOAT2(0.5f, 0.5f)};
 	_p_mesh->Vertices[i++] = { XMFLOAT3(-0.5f, 0.5f, 0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f), _color, XMFLOAT2(1, 0.5f)};
 
-	// unten
+	// down
 	_p_mesh->Vertices[i++] = { XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, -1.0f, 0.0f), _color, XMFLOAT2(0.5f, 0.5f)};
 	_p_mesh->Vertices[i++] = { XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, -1.0f, 0.0f), _color, XMFLOAT2(1, 0.5f)};
 	_p_mesh->Vertices[i++] = { XMFLOAT3(-0.5f, -0.5f, 0.5f),XMFLOAT3(0.0f, -1.0f, 0.0f), _color, XMFLOAT2(0.5f, 1)};
 	_p_mesh->Vertices[i++] = { XMFLOAT3(0.5f, -0.5f, 0.5f), XMFLOAT3(0.0f, -1.0f, 0.0f), _color, XMFLOAT2(1, 1)};
 
-	// vorne
+	// front
 	_p_mesh->Vertices[i++] = { XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, -1.0f), _color, XMFLOAT2(0, 0.25f)};
 	_p_mesh->Vertices[i++] = { XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, -1.0f), _color, XMFLOAT2(0.25f, 0.25f)};
 	_p_mesh->Vertices[i++] = { XMFLOAT3(0.5f, 0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, -1.0f), _color, XMFLOAT2(0, 0.5f)};
 	_p_mesh->Vertices[i++] = { XMFLOAT3(-0.5f, 0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, -1.0f),_color, XMFLOAT2(0.25f, 0.5f)};
 
-	// rechts
+	// right
 	_p_mesh->Vertices[i++] = { XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), _color, XMFLOAT2(0.25f, 0)};
 	_p_mesh->Vertices[i++] = { XMFLOAT3(0.5f, -0.5f, 0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), _color, XMFLOAT2(0.5f, 0)};
 	_p_mesh->Vertices[i++] = { XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), _color, XMFLOAT2(0.25f, 0.5f)};
 	_p_mesh->Vertices[i++] = { XMFLOAT3(0.5f, 0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), _color, XMFLOAT2(0.5f, 0.5f)};
 
-	// hinten
+	// back
 	_p_mesh->Vertices[i++] = { XMFLOAT3(0.5f, -0.5f, 0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f), _color, XMFLOAT2(0, 0)};
 	_p_mesh->Vertices[i++] = { XMFLOAT3(-0.5f, -0.5f, 0.5f),XMFLOAT3(0.0f, 0.0f, 1.0f), _color, XMFLOAT2(0.25f, 0)};
 	_p_mesh->Vertices[i++] = { XMFLOAT3(-0.5f, 0.5f, 0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f), _color, XMFLOAT2(0, 0.25f)};
 	_p_mesh->Vertices[i++] = { XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f), _color, XMFLOAT2(0.25f, 0.25f)};
 
-	// links
+	// left
 	_p_mesh->Vertices[i++] = { XMFLOAT3(-0.5f, -0.5f, 0.5f),XMFLOAT3(-1.0f, 0.0f, 0.0f), _color, XMFLOAT2(0, 0.5f)};
 	_p_mesh->Vertices[i++] = { XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(-1.0f, 0.0f, 0.0f), _color, XMFLOAT2(0.5f, 0.5f)};
 	_p_mesh->Vertices[i++] = { XMFLOAT3(-0.5f, 0.5f, -0.5f), XMFLOAT3(-1.0f, 0.0f, 0.0f),_color, XMFLOAT2(0, 1)};
@@ -48,7 +48,7 @@ void CShapeCreator::CreateCube(CMesh* _p_mesh, XMFLOAT4 _color)
 
 
 	i = 0;
-	for (int j = 0; j < _p_mesh->m_vertexCount; j += 4)
+	for (int j = 0; j < _p_mesh->VertexCount; j += 4)
 	{
 		_p_mesh->Indices[i++] = j;
 		_p_mesh->Indices[i++] = j + 2;
@@ -60,13 +60,13 @@ void CShapeCreator::CreateCube(CMesh* _p_mesh, XMFLOAT4 _color)
 	}
 }
 
-void CShapeCreator::CreateOktaeder(CMesh* _p_mesh, XMFLOAT4 _color)
+void ShapeCreator::CreateOktaeder(CMesh* _p_mesh, XMFLOAT4 _color)
 {
-	_p_mesh->m_vertexCount = 8 * 3;
-	_p_mesh->m_indexCount = 8 * 3;
+	_p_mesh->VertexCount = 8 * 3;
+	_p_mesh->IndexCount = 8 * 3;
 
-	_p_mesh->Vertices = new SVertexData[_p_mesh->m_vertexCount];
-	_p_mesh->Indices = new WORD[_p_mesh->m_indexCount];
+	_p_mesh->Vertices = new VertexData[_p_mesh->VertexCount];
+	_p_mesh->Indices = new WORD[_p_mesh->IndexCount];
 
 	int i = 0;
 	_p_mesh->Vertices[i++] = { XMFLOAT3(0.0f, 0.5f, 0.0f),XMFLOAT3(1, 1, -1), _color };
@@ -98,31 +98,31 @@ void CShapeCreator::CreateOktaeder(CMesh* _p_mesh, XMFLOAT4 _color)
 	_p_mesh->Vertices[i++] = { XMFLOAT3(-0.5f, 0.0f, 0.0f),XMFLOAT3(-1, -1, 1),	_color };
 
 	_p_mesh->Vertices[i++] = { XMFLOAT3(0.0f, -0.5f, 0.0f),XMFLOAT3(-1, -1, -1), _color };
-	_p_mesh->Vertices[i++] = { XMFLOAT3(-0.5f, 0.0f, 0.0f),XMFLOAT3(-1, -1, -1),	_color };
+	_p_mesh->Vertices[i++] = { XMFLOAT3(-0.5f, 0.0f, 0.0f),XMFLOAT3(-1, -1, -1), _color };
 	_p_mesh->Vertices[i++] = { XMFLOAT3(0.0f, 0.0f, -0.5f),XMFLOAT3(-1, -1, -1), _color };
 
-	for (i = 0; i < _p_mesh->m_vertexCount; i++)
+	for (i = 0; i < _p_mesh->VertexCount; i++)
 	{
 		_p_mesh->Indices[i] = i;
 	}
 }
 
-void CShapeCreator::CreateSphere(CMesh* _p_mesh, int _slices, int _heightSegments, XMFLOAT4 _color)
+void ShapeCreator::CreateSphere(CMesh* _p_mesh, int _slices, int _heightSegments, XMFLOAT4 _color)
 {
 	if (_slices < 2 || _heightSegments < 3)
 		return;
 
-	_p_mesh->m_vertexCount = _slices * _heightSegments + 2 + _heightSegments;
-	_p_mesh->m_indexCount = _heightSegments * _slices * 6;
+	_p_mesh->VertexCount = _slices * _heightSegments + 2 + _heightSegments;
+	_p_mesh->IndexCount = _heightSegments * _slices * 6;
 
-	_p_mesh->Vertices = new SVertexData[_p_mesh->m_vertexCount];
-	_p_mesh->Indices = new WORD[_p_mesh->m_indexCount];
+	_p_mesh->Vertices = new VertexData[_p_mesh->VertexCount];
+	_p_mesh->Indices = new WORD[_p_mesh->IndexCount];
 
-	ZeroMemory(_p_mesh->Vertices, _p_mesh->m_vertexCount * sizeof(SVertexData));
-	ZeroMemory(_p_mesh->Indices, _p_mesh->m_indexCount * sizeof(WORD));
+	ZeroMemory(_p_mesh->Vertices, _p_mesh->VertexCount * sizeof(VertexData));
+	ZeroMemory(_p_mesh->Indices, _p_mesh->IndexCount * sizeof(WORD));
 
 	int i = 0;
-	// polkappe oben
+	// upper half
 	_p_mesh->Vertices[i++] = { XMFLOAT3(0.0f, 0.5f, 0.0f),XMFLOAT3(0, 0.5f, 0), _color, XMFLOAT2(0.5f, 0) };
 	XMFLOAT3 pos;
 	float yPos;
@@ -140,7 +140,7 @@ void CShapeCreator::CreateSphere(CMesh* _p_mesh, int _slices, int _heightSegment
 	_p_mesh->Vertices[i++] = { XMFLOAT3(0.0f, -0.5f, 0.0f),XMFLOAT3(0, -0.5f, 0), _color, XMFLOAT2(0.5f, 1) };
 
 	i = 0;
-	// polkappe oben
+
 	for (int x = 0; x < _slices; x++)
 	{
 		_p_mesh->Indices[i++] = 0;
@@ -149,7 +149,7 @@ void CShapeCreator::CreateSphere(CMesh* _p_mesh, int _slices, int _heightSegment
 		_p_mesh->Indices[i++] = x + 2;
 	}
 
-	// mitte
+	// middle
 	for (int y = 0; y < _heightSegments - 1; y++)
 	{
 		for (int x = 0; x < _slices; x++)
@@ -164,25 +164,25 @@ void CShapeCreator::CreateSphere(CMesh* _p_mesh, int _slices, int _heightSegment
 		}
 	}
 
-	// polkappe unten
+	// lower half
 	for (int x = 0; x < _slices; x++)
 	{
-		_p_mesh->Indices[i++] = _p_mesh->m_vertexCount - 1;
-		_p_mesh->Indices[i++] = _p_mesh->m_vertexCount - 1 - (_slices + 1) + 1 + x;
-		_p_mesh->Indices[i++] = _p_mesh->m_vertexCount - 1 - (_slices + 1) + x;
+		_p_mesh->Indices[i++] = _p_mesh->VertexCount - 1;
+		_p_mesh->Indices[i++] = _p_mesh->VertexCount - 1 - (_slices + 1) + 1 + x;
+		_p_mesh->Indices[i++] = _p_mesh->VertexCount - 1 - (_slices + 1) + x;
 	}
 }
 
-void CShapeCreator::CreatePlane(CMesh* _p_mesh, XMFLOAT4 _color)
+void ShapeCreator::CreatePlane(CMesh* _p_mesh, XMFLOAT4 _color)
 {
-	_p_mesh->m_vertexCount = 4;
-	_p_mesh->m_indexCount = 6;
+	_p_mesh->VertexCount = 4;
+	_p_mesh->IndexCount = 6;
 
-	_p_mesh->Vertices = new SVertexData[_p_mesh->m_vertexCount];
-	_p_mesh->Indices = new WORD[_p_mesh->m_indexCount];
+	_p_mesh->Vertices = new VertexData[_p_mesh->VertexCount];
+	_p_mesh->Indices = new WORD[_p_mesh->IndexCount];
 
 	int i = 0;
-	// oben
+	// up
 	_p_mesh->Vertices[i++] = { XMFLOAT3(-0.5f, 0.0f, -0.5f), XMFLOAT3(1, 1, -1),_color, XMFLOAT2(0,1) };
 	_p_mesh->Vertices[i++] = { XMFLOAT3(0.5f, 0.0f, -0.5f), XMFLOAT3(1, 1, -1),_color, XMFLOAT2(1,1) };
 	_p_mesh->Vertices[i++] = { XMFLOAT3(0.5f, 0.0f, 0.5f), XMFLOAT3(1, 1, -1),_color, XMFLOAT2(1,0) };

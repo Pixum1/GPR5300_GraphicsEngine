@@ -1,7 +1,7 @@
 #include "../../../header-files/gameobjects/materials/Cubemap.h"
 #include "../../../header-files/Game.h"
 
-int CCubemap::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
+int Cubemap::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
 {
     p_dxdevice = _p_dxdevice;
     p_dxcontext = _p_dxcontext;
@@ -11,7 +11,7 @@ int CCubemap::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
     return 0;
 }
 
-int CCubemap::Start()
+int Cubemap::Start()
 {
     D3DX11_IMAGE_LOAD_INFO loadInfo = {};
     loadInfo.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
@@ -20,7 +20,7 @@ int CCubemap::Start()
     HRESULT hr = D3DX11CreateTextureFromFile(p_dxdevice, fileName, &loadInfo, nullptr, (ID3D11Resource**)&p_texture, &hr);
     if (FAILED(hr))
     {
-        MessageBox(WDS.m_WindowHandle, fileName, L"Failed to create cubemap texture", MB_OK);
+        MessageBox(WDS.WindowHandle, fileName, L"Failed to create cubemap texture", MB_OK);
         return -105;
     }
 
@@ -37,7 +37,7 @@ int CCubemap::Start()
     hr = p_dxdevice->CreateShaderResourceView(p_texture, &viewDesc, &p_shaderResourceView);
     if (FAILED(hr))
     {
-        MessageBox(WDS.m_WindowHandle, fileName, L"Failed to create cubemap shader resourceview", MB_OK);
+        MessageBox(WDS.WindowHandle, fileName, L"Failed to create cubemap shader resourceview", MB_OK);
         return -106;
     }
 
@@ -51,14 +51,14 @@ int CCubemap::Start()
     hr = p_dxdevice->CreateSamplerState(&samplerDesc, &p_textureSampler);
     if (FAILED(hr))
     {
-        MessageBox(WDS.m_WindowHandle, fileName, L"Failed to create cubemap sampler state", MB_OK);
+        MessageBox(WDS.WindowHandle, fileName, L"Failed to create cubemap sampler state", MB_OK);
         return -107;
     }
 
     return 0;
 }
 
-int CCubemap::Update()
+int Cubemap::Update()
 {
     p_dxcontext->PSSetSamplers(0, 1, &p_textureSampler);
     p_dxcontext->PSSetShaderResources(0, 1, &p_shaderResourceView);
@@ -66,7 +66,7 @@ int CCubemap::Update()
     return 0;
 }
 
-int CCubemap::DeInit()
+int Cubemap::DeInit()
 {
     SafeRelease(p_dxdevice);
     SafeRelease(p_dxcontext);

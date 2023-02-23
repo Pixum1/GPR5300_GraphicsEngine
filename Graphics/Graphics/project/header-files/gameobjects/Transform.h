@@ -1,10 +1,10 @@
 #pragma once
 #include "../misc/GraphicsPCH.h"
 
-class CTransform
+class Transform
 {
 public:
-	CTransform()
+	Transform()
 	{
 		Scale = { 1,1,1 };
 		Rotation = { 0,0,0 };
@@ -13,6 +13,14 @@ public:
 		LocalUp = { 0,1,0 };
 		LocalRight = { 1,0,0 };
 		LocalForward = { 0,0,1 };
+
+		TranslationMatrix = {};
+		RotationMatrix = {};
+		LocalScaleMatrix = {};
+
+		localForward = {};
+		localRight = {};
+		localUp = {};
 
 		WorldMatrix = { };
 	}

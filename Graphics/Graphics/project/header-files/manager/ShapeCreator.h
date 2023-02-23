@@ -1,7 +1,7 @@
 #pragma once
 #include "../gameobjects/components/Mesh.h"
 
-class CShapeCreator
+class ShapeCreator
 {
 public:
 	void CreateCube(CMesh* _p_mesh, XMFLOAT4 _color = XMFLOAT4(1,1,1,1));

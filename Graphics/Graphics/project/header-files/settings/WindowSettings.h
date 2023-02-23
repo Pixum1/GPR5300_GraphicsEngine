@@ -1,14 +1,14 @@
 #pragma once
 
-struct SWindowSettings
+struct WindowSettings
 {
-	const long m_WindowWidth = 1280;
-	const long m_WindowHeight = 720;
+	const long WindowWidth = 1280;
+	const long WindowHeight = 720;
 
-	LPCWSTR m_WindowClassName = L"DirectX Graphics Enginge";
-	LPCSTR m_WindowClassNameShort = "DirectX Graphics Enginge";
-	LPCSTR m_WindowName = "DirectX Graphics Enginge, Tobias Knauf";
-	HWND m_WindowHandle = nullptr;
+	LPCWSTR WindowClassName = L"DirectX Graphics Enginge";
+	LPCSTR WindowClassNameShort = "DirectX Graphics Enginge";
+	LPCSTR WindowName = "DirectX Graphics Enginge, Tobias Knauf";
+	HWND WindowHandle = nullptr;
 
-	const bool m_enableVSync = false;
+	const bool EnableVSync = false;
 };

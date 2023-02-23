@@ -2,7 +2,7 @@
 #include "../gameobjects/Entity.h"
 #include <list>
 
-class CContentManager
+class ContentManager
 {
 public:
 	/// <summary>
@@ -25,19 +25,19 @@ public:
 	/// </summary>
 	/// <param name="_entity">Entity to add</param>
 	/// <returns></returns>
-	bool AddEntity(CEntity* _entity);
+	bool AddEntity(Entity* _p_entity);
 	/// <summary>
 	/// Remove an entity from the list
 	/// </summary>
 	/// <param name="_entity">Entity to remove</param>
 	/// <returns></returns>
-	bool RemoveEntity(CEntity* _entity);
+	bool RemoveEntity(Entity* _p_entity);
 	/// <summary>
 	/// Checks if an entity exists in the list
 	/// </summary>
 	/// <param name="_entity">Entity to check</param>
 	/// <returns></returns>
-	bool ContainsEntity(CEntity* _entity);
+	bool ContainsEntity(Entity* _p_entity);
 
 	int CreateSkyBox();
 
@@ -54,9 +54,9 @@ public:
 	bool Resize;
 
 private:
-	std::list<CEntity*> m_entities;				// holds all entities
-	std::list<CEntity*> m_entitiesToDelete;		// holds all entities that need to be destroyed
+	std::list<Entity*> entities;				// holds all entities
+	std::list<Entity*> entitiesToDelete;		// holds all entities that need to be destroyed
 
-	CEntity* p_skybox;
+	Entity* p_skybox;
 };
 

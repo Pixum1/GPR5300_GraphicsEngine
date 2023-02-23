@@ -3,14 +3,12 @@
 #include "../../misc/ConstantBuffer.h"
 #include "Component.h"
 
-class CMaterial;
+class Material;
 
-class CMesh : public CComponent
+class CMesh : public Component
 {
 public:
-	CMesh(CEntity* _p_entity) : CComponent(_p_entity) 
-	{
-	}
+	CMesh(Entity* _p_entity) : Component(_p_entity) {}
 	/// <summary>
 	/// Assigns DirectX device and context
 	/// </summary>
@@ -34,19 +32,19 @@ public:
 	/// Updates the shader
 	/// </summary>
 	void Render();
-	void SetMaterial(CMaterial* _mat);
+	void SetMaterial(Material* _p_mat);
 
 public:
-	SVertexData* Vertices;		// Contains Position, Color, UV and normals
-	WORD* Indices;
-	int m_vertexCount;
-	int m_indexCount;
-	CMaterial* p_material;
+	VertexData* Vertices = nullptr;		// Contains Position, Color, UV and normals
+	WORD* Indices = nullptr;
+	int VertexCount;
+	int IndexCount;
+	Material* p_Material = nullptr;
 
 private:
-	ID3D11Buffer* m_vertexBuffer;
-	ID3D11Buffer* m_indexBuffer;
+	ID3D11Buffer* vertexBuffer = nullptr;
+	ID3D11Buffer* indexBuffer = nullptr;
 
-	SStandardConstantBuffer m_objectConstantBuffer;
+	StandardConstantBuffer objectConstantBuffer;
 };
 

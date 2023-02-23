@@ -1,6 +1,6 @@
 #include "../../header-files/gameobjects/Transform.h"
 
-void CTransform::Update()
+void Transform::Update()
 {
 	// Update Matrices
 	TranslationMatrix = XMMatrixTranslation(Position.x, Position.y, Position.z);

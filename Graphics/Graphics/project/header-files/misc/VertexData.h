@@ -1,7 +1,7 @@
 #pragma once
 #include "GraphicsPCH.h"
 
-struct SVertexData
+struct VertexData
 {
 	XMFLOAT3 Position;
 	XMFLOAT3 Normal;

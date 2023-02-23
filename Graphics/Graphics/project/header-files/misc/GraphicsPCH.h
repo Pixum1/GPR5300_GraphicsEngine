@@ -1,14 +1,14 @@
 #pragma once
 
 // System Includes
-#include <Windows.h>		// Fenstererzeugung und Konfiguration
+#include <Windows.h>
 
 // DirectX
-#include <d3d11.h>			// Hauptheaderfile
+#include <d3d11.h>
 #include <D3DX11.h>
-#include <d3dcompiler.h>	// Läd und kompiliert Shader
-#include <DirectXMath.h>	// Matrix- und Vektormathe
-#include <DirectXColors.h>	// Liefert schöne Farben!
+#include <d3dcompiler.h>
+#include <DirectXMath.h>
+#include <DirectXColors.h>
 
 // STL includes
 #include <string>
@@ -26,8 +26,6 @@
 #pragma comment(lib, "winmm.lib")
 
 #include <WICTextureLoader.h>
-#include <SpriteFont.h>
-#include <SpriteBatch.h>
 
 using namespace DirectX;
 

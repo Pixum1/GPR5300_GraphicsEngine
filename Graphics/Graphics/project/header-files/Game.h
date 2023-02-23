@@ -7,12 +7,12 @@
 #include "manager/InputManager.h"
 #include "manager/ShapeCreator.h"
 
-#define GetGame (CGame::Get())
-#define WDS (*(CGame::Get()->GetWindowSettings()))
-#define DXS (*(CGame::Get()->GetDirectXSettings()))
-#define CTM (*(CGame::Get()->GetContentManager()))
-#define IPM (*(CGame::Get()->GetInputManager()))
-#define SHC (*(CGame::Get()->GetShapeCreator()))
+#define GetGame (Game::Get())
+#define WDS (*(Game::Get()->GetWindowSettings()))
+#define DXS (*(Game::Get()->GetDirectXSettings()))
+#define CTM (*(Game::Get()->GetContentManager()))
+#define IPM (*(Game::Get()->GetInputManager()))
+#define SHC (*(Game::Get()->GetShapeCreator()))
 
 #pragma region Defines_for_Texture_initializing_-_not_used_anymore
 //#define WRAP (D3D11_TEXTURE_ADDRESS_WRAP)
@@ -27,32 +27,36 @@
 
 #define FAILHR(errorcode) if (FAILED(hr)) { return errorcode; }
 
-class CGame
+class Game
 {
 public:
-	static CGame* Get()
+	static Game* Get()
 	{
-		static CGame* instance = new CGame();	// Diese Zeile wird nur beim ersten Mal ausgeführt
+		static Game* instance = new Game();	// Diese Zeile wird nur beim ersten Mal ausgeführt
 		return instance;						// Diese immer
 	}
-
-private:
-	SWindowSettings m_windowSettings;
-	SDirectXSettings m_directXSettings;
-	CContentManager m_contentManager;
-	CInputManager m_inputManager;
-	CShapeCreator m_shapeCreator;
-
-	SStandardConstantBuffer m_applicationConstantBuffer;
-	SStandardConstantBuffer m_frameConstantBuffer;
-	bool m_isRunning;
-
+	
+	// Variables
 public:
-	XMFLOAT3 m_camPos;
-	XMFLOAT3 m_camRot;
-	XMFLOAT3 m_lightDirection = XMFLOAT3(0.2f, -1.0f, 0.2f);
-	XMFLOAT4 m_ambientLight = XMFLOAT4(0.25f, 0.25f, 0.25f, 1);
+	XMFLOAT3 CamPos;
+	XMFLOAT3 CamRot;
+	XMFLOAT3 LightDirection = XMFLOAT3(0.2f, -1.0f, 0.2f);
+	XMFLOAT4 AmbientLight = XMFLOAT4(0.25f, 0.25f, 0.25f, 1);
+private:
+	WindowSettings windowSettings;
+	DirectXSettings directXSettings;
+	ContentManager contentManager;
+	InputManager inputManager;
+	ShapeCreator shapeCreator;
 
+	StandardConstantBuffer applicationConstantBuffer;
+	StandardConstantBuffer frameConstantBuffer;
+	bool isRunning;
+
+	float movementSpeed = 4;
+	float rotationSpeed = 4;
+
+	// Methods
 public:
 	/// <summary>
 	/// Initializes everything and calls Start
@@ -69,22 +73,18 @@ public:
 	/// Deinitializes all DirectX related stuff
 	/// </summary>
 	void Finalize();
-
-#pragma region Get Instances
-	inline SWindowSettings* GetWindowSettings() { return &m_windowSettings; }
-	inline SDirectXSettings* GetDirectXSettings() { return &m_directXSettings; }
-	inline CContentManager* GetContentManager() { return &m_contentManager; }
-	inline CInputManager* GetInputManager() { return &m_inputManager; }
-	inline CShapeCreator* GetShapeCreator() { return &m_shapeCreator; }
-#pragma endregion
-
 	/// <summary>
 	/// Switches the rasterizer state between Solid and Wireframe
 	/// </summary>
 	void SwitchRasterizerState();
 
-	float movementSpeed = 4;
-	float rotationSpeed = 4;
+#pragma region Get Instances
+	inline WindowSettings* GetWindowSettings() { return &windowSettings; }
+	inline DirectXSettings* GetDirectXSettings() { return &directXSettings; }
+	inline ContentManager* GetContentManager() { return &contentManager; }
+	inline InputManager* GetInputManager() { return &inputManager; }
+	inline ShapeCreator* GetShapeCreator() { return &shapeCreator; }
+#pragma endregion
 
 private:
 	/// <summary>

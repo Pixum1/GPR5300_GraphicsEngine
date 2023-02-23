@@ -2,10 +2,10 @@
 #include "../../misc/GraphicsPCH.h"
 #include "../../gameobjects/materials/Texture.h"
 
-class CCubemap : public CTexture
+class Cubemap : public Texture
 {
 public:
-	CCubemap(LPCWSTR _fileName, ETextureType _type) : CTexture(_fileName, _type)
+	Cubemap(LPCWSTR _fileName, ETextureType _type) : Texture(_fileName, _type)
 	{
 		fileName = _fileName;
 	};
@@ -34,10 +34,10 @@ public:
 	virtual int DeInit() override;
 
 protected:
-	ETextureType m_textureType;
+	ETextureType textureType;
 
-	ID3D11Device* p_dxdevice;
-	ID3D11DeviceContext* p_dxcontext;
+	ID3D11Device* p_dxdevice = nullptr;
+	ID3D11DeviceContext* p_dxcontext = nullptr;
 
 	ID3D11Texture2D* p_texture = nullptr;
 	ID3D11ShaderResourceView* p_shaderResourceView = nullptr;
