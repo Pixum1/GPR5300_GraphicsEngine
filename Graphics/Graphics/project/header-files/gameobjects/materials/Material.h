@@ -23,16 +23,21 @@ public:
 		Init();
 	}
 	/// <summary>
-	/// Inititalizes the Materials and creates pixel and vertex shader
+	/// Inititalizes the textures
 	/// </summary>
 	/// <returns></returns>
 	virtual int Init();
+	/// <summary>
+	/// Calls Start in all textures and creates pixel and vertex shader
+	/// </summary>
+	/// <returns></returns>
+	virtual int Start();
 	/// <summary>
 	/// Updates the light constant buffer, sets vertex and pixel shader and updates the different materials
 	/// </summary>
 	virtual void Render();
 	/// <summary>
-	/// Deinitializes the material
+	/// SafeReleases every directX component
 	/// </summary>
 	/// <returns></returns>
 	virtual bool DeInit();

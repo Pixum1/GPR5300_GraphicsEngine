@@ -7,14 +7,14 @@ int WINAPI wWinMain(HINSTANCE _hInstance, HINSTANCE _prevHInstance, LPWSTR _cmdL
 	UNREFERENCED_PARAMETER(_cmdLineArgV);
 	UNREFERENCED_PARAMETER(_cmdLineArgC);
 
-	int value = CGame::Get()->Initialize(_hInstance);
+	int value = GetGame->Initialize(_hInstance);
 	if (FAILED(value))
 	{
 		return value;
 	}
-	value = CGame::Get()->Run();
+	value = GetGame->Run();
 
-	CGame::Get()->Finalize();
+	GetGame->Finalize();
 
 	return value;
 }

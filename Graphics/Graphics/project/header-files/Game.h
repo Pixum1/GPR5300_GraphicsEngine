@@ -29,12 +29,6 @@
 
 class CGame
 {
-private:
-	CGame();
-public:
-	~CGame();
-
-
 public:
 	static CGame* Get()
 	{
@@ -114,9 +108,6 @@ private:
 	/// </summary>
 	/// <returns></returns>
 	int Start();
-
-	void ClearBackBuffer(const float _clearColor[4], float _clearDepth, UINT8 _clearStencil);
-
 	/// <summary>
 	/// Called every frame
 	/// </summary>
@@ -127,6 +118,6 @@ private:
 	/// </summary>
 	void Render();
 
-	CEntity* p_skybox;
+	void ClearBackBuffer(const float _clearColor[4], float _clearDepth, UINT8 _clearStencil);
 };
 

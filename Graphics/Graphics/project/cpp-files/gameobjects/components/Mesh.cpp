@@ -4,8 +4,20 @@
 #include "../../../header-files/gameobjects/materials/Material.h"
 
 
-bool CMesh::Init(ID3D11Device* _p_device, ID3D11DeviceContext* _p_devicecontext)
+bool CMesh::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
 {
+	p_dxdevice = _p_dxdevice;
+	p_dxcontext = _p_dxcontext;
+
+	return 0;
+}
+
+bool CMesh::Start()
+{
+	if (p_material != nullptr)
+		p_material->Start();
+
+	// Create vertex buffer
 	D3D11_BUFFER_DESC bufferDesc = { 0 };
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bufferDesc.ByteWidth = sizeof(SVertexData) * m_vertexCount;
@@ -20,6 +32,7 @@ bool CMesh::Init(ID3D11Device* _p_device, ID3D11DeviceContext* _p_devicecontext)
 		return false;
 	}
 
+	// Create Index Buffer
 	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bufferDesc.ByteWidth = sizeof(WORD) * m_indexCount;
 
@@ -32,11 +45,6 @@ bool CMesh::Init(ID3D11Device* _p_device, ID3D11DeviceContext* _p_devicecontext)
 	}
 }
 
-bool CMesh::Start()
-{
-	return true;
-}
-
 void CMesh::Update()
 {
 
@@ -44,8 +52,10 @@ void CMesh::Update()
 
 bool CMesh::DeInit()
 {
-	return true;
+	SafeRelease(m_vertexBuffer);
+	SafeRelease(m_indexBuffer);
 
+	return true;
 }
 
 void CMesh::Render()
@@ -82,7 +92,7 @@ void CMesh::Render()
 	DXS.m_deviceContext->OMSetRenderTargets(1, &DXS.m_renderTargetView, DXS.m_depthStencilView);
 	DXS.m_deviceContext->OMSetDepthStencilState(DXS.m_depthStencilState, 0);
 
-	// Objekt zeichnen
+	// Draw object
 	DXS.m_deviceContext->DrawIndexed(m_indexCount, 0, 0);
 
 }

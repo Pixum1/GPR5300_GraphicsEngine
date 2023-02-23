@@ -13,7 +13,7 @@ public:
 		isActive = true;
 	}
 
-	virtual bool Init(ID3D11Device* _p_device, ID3D11DeviceContext* _p_devicecontext) = 0;
+	virtual bool Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext) = 0;
 	virtual bool Start() = 0;
 	virtual void Update() = 0;
 	virtual bool DeInit() = 0;
@@ -21,5 +21,9 @@ public:
 public:
 	CEntity* p_Entity;
 	bool isActive;
+
+protected:
+	ID3D11Device* p_dxdevice;
+	ID3D11DeviceContext* p_dxcontext;
 };
 

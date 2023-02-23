@@ -4,12 +4,26 @@
 
 int CMaterial::Init()
 {
+	// Initialize textures
 	if (p_albedo != nullptr)
 		p_albedo->Init(p_dxdevice, p_dxcontext);
 
 	if (p_normal != nullptr)
 		p_normal->Init(p_dxdevice, p_dxcontext);
 
+	return 0;
+}
+
+int CMaterial::Start()
+{
+	// Start textures
+	if (p_albedo != nullptr)
+		p_albedo->Start();
+
+	if (p_normal != nullptr)
+		p_normal->Start();
+
+	// Create shaders
 	CreateVertexShader();
 	CreatePixelShader();
 
@@ -21,6 +35,7 @@ void CMaterial::Render()
 #pragma region Update Light Constant Buffer
 	SLightConstantBuffer lightBuffer = {};
 
+	// Update Light properties
 	lightBuffer.AmbientColor = GetGame->m_ambientLight;
 	lightBuffer.DiffuseColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1);
 	lightBuffer.SpecularColor = XMFLOAT4(1.0f, 1.0f, 1.0f, smoothness);
@@ -34,9 +49,10 @@ void CMaterial::Render()
 	p_dxcontext->VSSetShader(p_vertexShader, nullptr, 0);
 	// Pixel Shader
 	p_dxcontext->PSSetShader(p_pixelShader, nullptr, 0);
-
+	// Input Layout
 	p_dxcontext->IASetInputLayout(p_inputLayout);
 
+	// Update textures
 	if (p_albedo != nullptr)
 		p_albedo->Update();
 
@@ -45,6 +61,13 @@ void CMaterial::Render()
 }
 bool CMaterial::DeInit()
 {
+	SafeRelease(p_inputLayout);
+	SafeRelease(p_vertexShader);
+	SafeRelease(p_pixelShader);
+	SafeRelease(p_shaderResourceView);
+	SafeRelease(p_dxdevice);
+	SafeRelease(p_dxcontext);
+
 	return false;
 }
 

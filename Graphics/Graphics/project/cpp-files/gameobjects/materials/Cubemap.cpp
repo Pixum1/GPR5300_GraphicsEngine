@@ -6,9 +6,17 @@ int CCubemap::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
     p_dxdevice = _p_dxdevice;
     p_dxcontext = _p_dxcontext;
 
+    Start();
+
+    return 0;
+}
+
+int CCubemap::Start()
+{
     D3DX11_IMAGE_LOAD_INFO loadInfo = {};
     loadInfo.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
 
+    // load and create cubemap dds texture
     HRESULT hr = D3DX11CreateTextureFromFile(p_dxdevice, fileName, &loadInfo, nullptr, (ID3D11Resource**)&p_texture, &hr);
     if (FAILED(hr))
     {
@@ -25,6 +33,7 @@ int CCubemap::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
     viewDesc.TextureCube.MipLevels = texDesc.MipLevels;
     viewDesc.TextureCube.MostDetailedMip = 0;
 
+    // create shader ressource view
     hr = p_dxdevice->CreateShaderResourceView(p_texture, &viewDesc, &p_shaderResourceView);
     if (FAILED(hr))
     {
@@ -32,6 +41,7 @@ int CCubemap::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
         return -106;
     }
 
+    // set sampler desription properties
     D3D11_SAMPLER_DESC samplerDesc = {};
     samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
     samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -44,6 +54,7 @@ int CCubemap::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
         MessageBox(WDS.m_WindowHandle, fileName, L"Failed to create cubemap sampler state", MB_OK);
         return -107;
     }
+
     return 0;
 }
 
@@ -57,5 +68,11 @@ int CCubemap::Update()
 
 int CCubemap::DeInit()
 {
+    SafeRelease(p_dxdevice);
+    SafeRelease(p_dxcontext);
+    SafeRelease(p_texture);
+    SafeRelease(p_shaderResourceView);
+    SafeRelease(p_textureSampler);
+
     return 0;
 }

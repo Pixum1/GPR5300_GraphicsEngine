@@ -8,14 +8,6 @@
 
 LRESULT CALLBACK WndProc(HWND _hwnd, UINT _message, WPARAM _wparam, LPARAM _lparam);
 
-CGame::CGame()
-{
-}
-
-CGame::~CGame()
-{
-}
-
 int CGame::Initialize(HINSTANCE _hInstance)
 {
 	if (!XMVerifyCPUSupport())
@@ -98,6 +90,14 @@ int CGame::Run()
 
 void CGame::Finalize()
 {
+	SafeRelease(DXS.m_device);
+	SafeRelease(DXS.m_deviceContext);
+	SafeRelease(DXS.m_swapChain);
+	SafeRelease(DXS.m_renderTargetView);
+	SafeRelease(DXS.m_depthStencilBuffer);
+	SafeRelease(DXS.m_depthStencilView);
+	SafeRelease(DXS.m_depthStencilState);
+	SafeRelease(DXS.m_currentRasterrizerState);
 }
 
 void CGame::SwitchRasterizerState()
@@ -209,7 +209,7 @@ int CGame::InitDirectX()
 		return -10;
 	}
 
-	ID3D11Texture2D* backbuffer;
+	ID3D11Texture2D* backbuffer = {};
 	hr = m_directXSettings.m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backbuffer);
 	if (FAILED(hr))
 	{
@@ -456,6 +456,8 @@ int CGame::Start()
 
 	CTM.AddEntity(TexturedPlane);		// !IMPORTANT! Add Entity to Content Manager  
 #pragma endregion
+
+	CTM.Start();
 
 	return 0;
 }

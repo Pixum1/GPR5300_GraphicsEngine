@@ -32,17 +32,6 @@ public:
 	/// Calls DeInit() in all components
 	/// </summary>
 	virtual void DeInit();
-
-	static void* operator new(size_t _size)
-	{
-		return _aligned_malloc(_size, 16);
-	}
-
-	static void operator delete(void* _memory)
-	{
-		_aligned_free(_memory);
-	}
-
 	/// <summary>
 	/// Get a specific component
 	/// </summary>

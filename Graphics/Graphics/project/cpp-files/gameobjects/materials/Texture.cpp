@@ -6,6 +6,14 @@ int CTexture::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
 	p_dxdevice = _p_dxdevice;
 	p_dxcontext = _p_dxcontext;
 
+	Start();
+
+    return 0;
+}
+
+int CTexture::Start()
+{
+	// Load and create texture
 	HRESULT hr = CreateWICTextureFromFile(p_dxdevice, fileName, &p_texture, &p_shaderResourceView);
 	if (FAILED(hr))
 	{
@@ -22,6 +30,7 @@ int CTexture::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
 	samplerDesc.MinLOD = 0;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
+	// Create Sampler State
 	hr = p_dxdevice->CreateSamplerState(&samplerDesc, &p_textureSampler);
 	if (FAILED(hr))
 	{
@@ -29,11 +38,12 @@ int CTexture::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
 		return -101;
 	}
 
-    return 0;
+	return 0;
 }
 
 int CTexture::Update()
 {
+	// Update Shader samplers and ressources
 	p_dxcontext->PSSetSamplers(m_textureType, 1, &p_textureSampler);
 	p_dxcontext->PSSetShaderResources(m_textureType, 1, &p_shaderResourceView);
 
@@ -42,5 +52,11 @@ int CTexture::Update()
 
 int CTexture::DeInit()
 {
+	SafeRelease(p_dxdevice);
+	SafeRelease(p_dxcontext);
+	SafeRelease(p_texture);
+	SafeRelease(p_shaderResourceView);
+	SafeRelease(p_textureSampler);
+
     return 0;
 }

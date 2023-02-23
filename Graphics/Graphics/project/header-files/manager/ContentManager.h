@@ -6,6 +6,11 @@ class CContentManager
 {
 public:
 	/// <summary>
+	/// Calls Start of each entity
+	/// </summary>
+	/// <returns></returns>
+	bool Start();
+	/// <summary>
 	/// Calls Update of each entity, sets the skybox worldmatrix
 	/// </summary>
 	/// <param name="_deltaTime"></param>
@@ -38,7 +43,7 @@ public:
 
 private:
 	/// <summary>
-	/// Removes all entities that should be destroyed
+	/// Removes all entities that should be destroyed and deinitializes them
 	/// </summary>
 	void CleanUp();
 

@@ -5,8 +5,19 @@
 #include "../../header-files/gameobjects/materials/Material.h"
 #include "../../header-files/gameobjects/materials/Cubemap.h"
 
+bool CContentManager::Start()
+{
+	for (auto itr : m_entities)
+	{
+		itr->Start();
+	}
+
+	return true;
+}
+
 void CContentManager::Update(float _deltaTime)
 {
+	// Update entities
 	for (auto itr : m_entities)
 	{
 		itr->Update(_deltaTime);
@@ -21,6 +32,7 @@ void CContentManager::Update(float _deltaTime)
 			itr->Resize(_deltaTime);
 	}
 
+	// Update Skybox
 	if (p_skybox != nullptr)
 	{
 		p_skybox->Update(_deltaTime);
@@ -33,6 +45,7 @@ void CContentManager::Update(float _deltaTime)
 
 void CContentManager::Render()
 {
+	// Render entities
 	for (auto itr : m_entities)
 	{
 		if (itr->GetComponent<CMesh>() != nullptr)
@@ -41,6 +54,7 @@ void CContentManager::Render()
 		}
 	}
 
+	// Render skybox
 	if (p_skybox != nullptr)
 		p_skybox->GetComponent<CMesh>()->Render();
 }
@@ -52,6 +66,7 @@ bool CContentManager::AddEntity(CEntity* _entity)
 		return false;
 	}
 
+	// intialize entity and add if no errors occured
 	if (_entity->Init())
 	{
 		m_entities.push_back(_entity);
@@ -97,6 +112,8 @@ int CContentManager::CreateSkyBox()
 		L"SkyboxPixelShader.cso", L"SkyboxVertexShader.cso", new CCubemap(L"..\\Assets\\Skybox.dds", Albedo), nullptr));
 
 	p_skybox->Init();
+
+	p_skybox->Start();
 
 	return 0;
 }

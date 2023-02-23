@@ -11,17 +11,26 @@ public:
 	};
 
 	/// <summary>
-	/// Creates the texture from the filename, shader resource view and sampler state
+	/// Assign DirectX device and context
 	/// </summary>
 	/// <param name="_p_dxdevice"></param>
 	/// <param name="_p_dxcontext"></param>
 	/// <returns></returns>
 	virtual int Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext) override;
 	/// <summary>
+	/// Creates the texture from the filename, shader resource view and sampler state
+	/// </summary>
+	/// <returns></returns>
+	virtual int Start() override;
+	/// <summary>
 	/// Updates sampler state and shader resource view
 	/// </summary>
 	/// <returns></returns>
 	virtual int Update() override;
+	/// <summary>
+	/// SafeReleases every directX component
+	/// </summary>
+	/// <returns></returns>
 	virtual int DeInit() override;
 
 protected:

@@ -12,14 +12,22 @@ public:
 	{
 	}
 	/// <summary>
-	/// Creates vertex and index buffer
+	/// Assigns DirectX device and context
 	/// </summary>
 	/// <param name="_p_device"></param>
 	/// <param name="_p_devicecontext"></param>
 	/// <returns></returns>
-	virtual bool Init(ID3D11Device* _p_device, ID3D11DeviceContext* _p_devicecontext) override;
+	virtual bool Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext) override;
+	/// <summary>
+	/// Creates vertex and index buffer, calls Start in Material
+	/// </summary>
+	/// <returns></returns>
 	virtual bool Start() override;
 	virtual void Update() override;
+	/// <summary>
+	/// SafeReleases every directX component
+	/// </summary>
+	/// <returns></returns>
 	virtual bool DeInit() override;
 
 	/// <summary>
