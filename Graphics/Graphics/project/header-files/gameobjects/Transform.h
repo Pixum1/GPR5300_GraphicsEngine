@@ -17,9 +17,10 @@ public:
 		WorldMatrix = { };
 	}
 
-	void Init();
+	/// <summary>
+	/// Update all values and the worldmatrix
+	/// </summary>
 	void Update();
-	void DeInit();
 
 public:
 	XMFLOAT3 Position;

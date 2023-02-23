@@ -2,22 +2,20 @@
 
 enum CB_Type
 {
-	CB_APPLICATION,			// Für Daten die sich nie ändern, zb CameraToScreen-Matrix
-	CB_FRAME,				// Für Daten die sich einmal pro Frame ändern, WorlfToCamera-Matrix
-	CB_OBJECT,				// Für Daten die sich bei jedem Objekt ändern, ObjectToWorld-Matrix
-	CB_LIGHT,				// Für Lichtberechnung
+	CB_APPLICATION,
+	CB_FRAME,
+	CB_OBJECT,
+	CB_LIGHT,
 
 	NumConstantBuffers
 };
 
 struct SDirectXSettings
 {
-	// Device Swap Chain	- sorgt für Austausch des Bildes
-	ID3D11Device* m_device = nullptr;						// Softwarerepräsentation der Grafikkarte
-	ID3D11DeviceContext* m_deviceContext = nullptr;			// Direkter zugriff auf die Grafikkarte
+	ID3D11Device* m_device = nullptr;
+	ID3D11DeviceContext* m_deviceContext = nullptr;
 	IDXGISwapChain* m_swapChain = nullptr;
 
-	// Render Target View - hier wird reingezeichnet
 	ID3D11RenderTargetView* m_renderTargetView = nullptr;
 
 	// Depth Stencil

@@ -14,14 +14,16 @@
 #define IPM (*(CGame::Get()->GetInputManager()))
 #define SHC (*(CGame::Get()->GetShapeCreator()))
 
-#define WRAP (D3D11_TEXTURE_ADDRESS_WRAP)
-#define MIRROR (D3D11_TEXTURE_ADDRESS_MIRROR)
-#define MIRROR_ONCE (D3D11_TEXTURE_ADDRESS_MIRROR_ONCE)
-#define CLAMP (D3D11_TEXTURE_ADDRESS_CLAMP)
-#define BORDER (D3D11_TEXTURE_ADDRESS_BORDER)
-
-#define LINEAR (D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR)
-#define POINT (D3D11_FILTER_MIN_MAG_MIP_POINT)
+#pragma region Defines_for_Texture_initializing_-_not_used_anymore
+//#define WRAP (D3D11_TEXTURE_ADDRESS_WRAP)
+//#define MIRROR (D3D11_TEXTURE_ADDRESS_MIRROR)
+//#define MIRROR_ONCE (D3D11_TEXTURE_ADDRESS_MIRROR_ONCE)
+//#define CLAMP (D3D11_TEXTURE_ADDRESS_CLAMP)
+//#define BORDER (D3D11_TEXTURE_ADDRESS_BORDER)
+//
+//#define LINEAR (D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR)
+//#define POINT (D3D11_FILTER_MIN_MAG_MIP_POINT)  
+#pragma endregion
 
 #define FAILHR(errorcode) if (FAILED(hr)) { return errorcode; }
 
@@ -40,18 +42,6 @@ public:
 		return instance;						// Diese immer
 	}
 
-	// Beschreibt wie der Speicher allokiert werden soll, hier wird dafür gesorgt 
-	// dass die adresse durch 16 teilbar ist (Notwendig später für Kommunikation mit der Grafikkarte)
-	static void* operator new(size_t _size)
-	{
-		return _aligned_malloc(_size, 16);
-	}
-
-	static void operator delete(void* _memory)
-	{
-		_aligned_free(_memory);
-	}
-
 private:
 	SWindowSettings m_windowSettings;
 	SDirectXSettings m_directXSettings;
@@ -61,7 +51,6 @@ private:
 
 	SStandardConstantBuffer m_applicationConstantBuffer;
 	SStandardConstantBuffer m_frameConstantBuffer;
-	SLightConstantBuffer m_lightConstantBuffer;
 	bool m_isRunning;
 
 public:
@@ -71,33 +60,71 @@ public:
 	XMFLOAT4 m_ambientLight = XMFLOAT4(0.25f, 0.25f, 0.25f, 1);
 
 public:
+	/// <summary>
+	/// Initializes everything and calls Start
+	/// </summary>
+	/// <param name="_hInstance"></param>
+	/// <returns></returns>
 	int Initialize(HINSTANCE _hInstance);
+	/// <summary>
+	/// Calls Update & Render and calculates the deltaTime
+	/// </summary>
+	/// <returns></returns>
 	int Run();
+	/// <summary>
+	/// Deinitializes all DirectX related stuff
+	/// </summary>
 	void Finalize();
 
+#pragma region Get Instances
 	inline SWindowSettings* GetWindowSettings() { return &m_windowSettings; }
 	inline SDirectXSettings* GetDirectXSettings() { return &m_directXSettings; }
 	inline CContentManager* GetContentManager() { return &m_contentManager; }
 	inline CInputManager* GetInputManager() { return &m_inputManager; }
 	inline CShapeCreator* GetShapeCreator() { return &m_shapeCreator; }
+#pragma endregion
 
+	/// <summary>
+	/// Switches the rasterizer state between Solid and Wireframe
+	/// </summary>
 	void SwitchRasterizerState();
 
 	float movementSpeed = 4;
 	float rotationSpeed = 4;
 
 private:
+	/// <summary>
+	/// Opens and initializes a new Windows window
+	/// </summary>
+	/// <param name="_hInstance"></param>
+	/// <returns></returns>
 	int InitApplication(HINSTANCE _hInstance);
+	/// <summary>
+	/// Initializes and creates DirectX components
+	/// </summary>
+	/// <returns></returns>
 	int InitDirectX();
+	/// <summary>
+	/// Creates Frame, Object and Light constantbuffers and initializes them
+	/// </summary>
+	/// <returns></returns>
 	int InitConstantBuffers();
-	int LoadLevel();
-
-	/*int CreateSimpleShader();
-	int CreateTexturedShader();*/
+	/// <summary>
+	/// Called after everything has been initialized
+	/// </summary>
+	/// <returns></returns>
+	int Start();
 
 	void ClearBackBuffer(const float _clearColor[4], float _clearDepth, UINT8 _clearStencil);
 
+	/// <summary>
+	/// Called every frame
+	/// </summary>
+	/// <param name="_deltaTime"></param>
 	void Update(float _deltaTime);
+	/// <summary>
+	/// Called every frame after Update(), updates Frame constant buffer and renders all entities
+	/// </summary>
 	void Render();
 
 	CEntity* p_skybox;

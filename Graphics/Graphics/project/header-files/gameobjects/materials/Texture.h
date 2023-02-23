@@ -1,6 +1,9 @@
 #pragma once
 #include "../../misc/GraphicsPCH.h"
 
+/// <summary>
+/// Definition for the texturetype, integer value determines samplerstate and texture in the shader
+/// </summary>
 enum ETextureType {
 	Albedo = 0,
 	Normalmap = 1,
@@ -14,9 +17,20 @@ public:
 		fileName = _fileName;
 		m_textureType = _type;
 	};
-
+	/// <summary>
+	/// Creates the texture from the filename, shader resource view and sampler state
+	/// </summary>
+	/// <param name="_p_dxdevice"></param>
+	/// <param name="_p_dxcontext"></param>
+	/// <returns></returns>
 	virtual int Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext);
+	/// <summary>
+	/// Updates sampler state and shader resource view
+	/// </summary>
 	virtual int Update();
+	/// <summary>
+	/// Deinitializes the texture
+	/// </summary>
 	virtual int DeInit();
 
 protected:

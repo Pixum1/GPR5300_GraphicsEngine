@@ -2,8 +2,8 @@
 
 struct SWindowSettings
 {
-	const long m_WindowWidth = 800;
-	const long m_WindowHeight = 600;
+	const long m_WindowWidth = 1280;
+	const long m_WindowHeight = 720;
 
 	LPCWSTR m_WindowClassName = L"DirectX Graphics Enginge";
 	LPCSTR m_WindowClassNameShort = "DirectX Graphics Enginge";

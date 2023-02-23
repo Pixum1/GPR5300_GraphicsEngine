@@ -35,11 +35,11 @@ float4 main(PixelShaderInput _in) : SV_TARGET
 	
     float3 normal = normalTex.Sample(normalSampler, _in.uv);
     normal = normalize(normal * 2 - float3(1, 1, 1));
-    normal = mul(transpose(worldMatrix), float4(normal, 0.0f)); // Lichtberechnung in World-space
+    normal = mul(normalize(LightDir) - _in.normal, float4(normal, 0.0f)); // Lichtberechnung in World-space
 
     float3 diffuse = saturate(col.xyz
 								* DiffuseColor.xyz
-								* dot(normalize(-LightDir), normal)
+								* (dot(normalize(-LightDir), normal) + (dot(normalize(-LightDir), _in.normal) - .3f))
 								* DiffuseColor.a);
 	
 	// Hilfsvektor ist der durchschnitt aus Lichtrichtung und Punkt zu Kamera

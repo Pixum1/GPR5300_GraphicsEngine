@@ -23,8 +23,6 @@ bool CEntity::Init()
 	if (m_InValid)
 		return false;
 
-	p_transform->Init();
-
 	for (CComponent* c : AllComponents)
 	{
 		c->Init(DXS.m_device, DXS.m_deviceContext);
@@ -56,8 +54,6 @@ void CEntity::Update(float _deltaTime)
 
 void CEntity::DeInit()
 {
-	p_transform->DeInit();
-
 	for (CComponent* c : AllComponents)
 	{
 		c->DeInit();

@@ -90,6 +90,5 @@ void CMesh::Render()
 void CMesh::SetMaterial(CMaterial* _mat)
 {
 	p_material = _mat;
-
 	p_material->Init();
 }

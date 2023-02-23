@@ -1,6 +1,7 @@
 #pragma once
 #include "GraphicsPCH.h"
 
+#pragma region Operator overloading
 // Add, Subtract, Multiply, Divide
 #pragma region ADD
 inline XMFLOAT2 operator+(XMFLOAT2 _lv, XMFLOAT2 _rv)
@@ -60,6 +61,7 @@ inline XMFLOAT4 operator/(XMFLOAT4 _lv, float _rv)
 {
 	return XMFLOAT4(_lv.x / _rv, _lv.y / _rv, _lv.z / _rv, _lv.w / _rv);
 }
+#pragma endregion  
 #pragma endregion
 
 // Clamp, Magnitude, Normalize, Lerp

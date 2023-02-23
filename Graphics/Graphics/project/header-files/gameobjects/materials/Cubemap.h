@@ -10,7 +10,17 @@ public:
 		fileName = _fileName;
 	};
 
+	/// <summary>
+	/// Creates the texture from the filename, shader resource view and sampler state
+	/// </summary>
+	/// <param name="_p_dxdevice"></param>
+	/// <param name="_p_dxcontext"></param>
+	/// <returns></returns>
 	virtual int Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext) override;
+	/// <summary>
+	/// Updates sampler state and shader resource view
+	/// </summary>
+	/// <returns></returns>
 	virtual int Update() override;
 	virtual int DeInit() override;
 

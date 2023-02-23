@@ -10,28 +10,32 @@ class CMesh : public CComponent
 public:
 	CMesh(CEntity* _p_entity) : CComponent(_p_entity) 
 	{
-		// additional initialization
-		m_usesTexture = false;
 	}
-	// Inherited via CComponent
+	/// <summary>
+	/// Creates vertex and index buffer
+	/// </summary>
+	/// <param name="_p_device"></param>
+	/// <param name="_p_devicecontext"></param>
+	/// <returns></returns>
 	virtual bool Init(ID3D11Device* _p_device, ID3D11DeviceContext* _p_devicecontext) override;
 	virtual bool Start() override;
 	virtual void Update() override;
 	virtual bool DeInit() override;
 
+	/// <summary>
+	/// Updates the shader
+	/// </summary>
 	void Render();
 	void SetMaterial(CMaterial* _mat);
 
 public:
-	SVertexData* Vertices;
+	SVertexData* Vertices;		// Contains Position, Color, UV and normals
 	WORD* Indices;
 	int m_vertexCount;
 	int m_indexCount;
 	CMaterial* p_material;
 
-protected:
-	bool m_usesTexture;
-
+private:
 	ID3D11Buffer* m_vertexBuffer;
 	ID3D11Buffer* m_indexBuffer;
 

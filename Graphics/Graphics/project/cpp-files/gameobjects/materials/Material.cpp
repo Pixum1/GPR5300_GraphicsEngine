@@ -48,7 +48,6 @@ bool CMaterial::DeInit()
 	return false;
 }
 
-
 int CMaterial::CreateInputLayout(ID3DBlob* _p_vertexBlob)
 {
 	D3D11_INPUT_ELEMENT_DESC vertexLayoutDesc[] =
@@ -116,6 +115,7 @@ int CMaterial::CreateVertexShader()
 
 	return 0;
 }
+
 int CMaterial::CreatePixelShader()
 {
 	ID3DBlob* shaderBlob;

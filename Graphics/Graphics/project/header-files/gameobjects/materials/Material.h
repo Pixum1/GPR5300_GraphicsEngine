@@ -22,14 +22,37 @@ public:
 
 		Init();
 	}
-
+	/// <summary>
+	/// Inititalizes the Materials and creates pixel and vertex shader
+	/// </summary>
+	/// <returns></returns>
 	virtual int Init();
+	/// <summary>
+	/// Updates the light constant buffer, sets vertex and pixel shader and updates the different materials
+	/// </summary>
 	virtual void Render();
+	/// <summary>
+	/// Deinitializes the material
+	/// </summary>
+	/// <returns></returns>
 	virtual bool DeInit();
 
 protected:
+	/// <summary>
+	/// Creates the vertex shader
+	/// </summary>
+	/// <returns></returns>
 	virtual int CreateVertexShader();
+	/// <summary>
+	/// Creates the input layout that is important for sending data to the vertex shader
+	/// </summary>
+	/// <param name="_p_vertexBlob"></param>
+	/// <returns></returns>
 	virtual int CreateInputLayout(ID3DBlob* _p_vertexBlob);
+	/// <summary>
+	/// Creates the pixel shader
+	/// </summary>
+	/// <returns></returns>
 	virtual int CreatePixelShader();
 
 	// Variables
@@ -41,7 +64,6 @@ protected:
 	CTexture* p_normal = nullptr;
 
 	ID3D11InputLayout* p_inputLayout = nullptr;
-
 	ID3D11VertexShader* p_vertexShader = nullptr;
 	ID3D11PixelShader* p_pixelShader = nullptr;
 

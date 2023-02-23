@@ -2,14 +2,6 @@
 #include "../../header-files/manager/InputManager.h"
 #include "../../header-files/Game.h"
 
-CInputManager::CInputManager()
-{
-}
-
-CInputManager::~CInputManager()
-{
-}
-
 int CInputManager::InitDirectInput(HINSTANCE _hInstance)
 {
 	HRESULT hr = DirectInput8Create(_hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (LPVOID*)&m_directInput, nullptr);
@@ -60,7 +52,7 @@ void CInputManager::DetectInput()
 
 }
 
-void CInputManager::CleanUp()
+void CInputManager::DeInit()
 {
 }
 

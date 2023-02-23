@@ -13,9 +13,24 @@ public:
 	CEntity(XMFLOAT3 _pos = XMFLOAT3(0,0,0), XMFLOAT3 _rot = XMFLOAT3(0,0,0));
 	virtual ~CEntity();
 
-	virtual bool Init();					// Erzeugen, zb Texturen Laden
+	/// <summary>
+	/// Initializes the transform and all components
+	/// </summary>
+	/// <returns></returns>
+	virtual bool Init();
+	/// <summary>
+	/// Calls Start() in all components
+	/// </summary>
+	/// <returns></returns>
 	virtual bool Start();
-	virtual void Update(float _deltaTime);		// Jeden Frame zur Berechnung
+	/// <summary>
+	/// Calls Update() in all components
+	/// </summary>
+	/// <param name="_deltaTime"></param>
+	virtual void Update(float _deltaTime);
+	/// <summary>
+	/// Calls DeInit() in all components
+	/// </summary>
 	virtual void DeInit();
 
 	static void* operator new(size_t _size)
@@ -28,13 +43,23 @@ public:
 		_aligned_free(_memory);
 	}
 
+	/// <summary>
+	/// Get a specific component
+	/// </summary>
+	/// <typeparam name="T">Type of component</typeparam>
+	/// <returns></returns>
 	template<typename T>
 	T* GetComponent();
 
+	/// <summary>
+	/// Add a specific component to the entity
+	/// </summary>
+	/// <typeparam name="T">Type of component</typeparam>
+	/// <returns></returns>
 	template<typename T>
 	T* AddComponent();
 
-	// Testing Methods
+	// Testing Methods - Called by ContentManager when specific button is pressed
 	void Move(float _deltaTime);
 	void Rotate(float _deltaTime);
 	void Resize(float _deltatime);
@@ -42,12 +67,10 @@ public:
 public:
 	CTransform* p_transform;
 
-	std::vector<CComponent*> AllComponents;
-
 private:
-	float dir = 1;
-	float m_time = 0;
-	XMFLOAT3 m_startPos;
+	float m_time = 0;				// Used for testing in Move()
+	XMFLOAT3 m_startPos;				// Used for testing in Move()
+	std::vector<CComponent*> AllComponents;
 
 protected:
 	bool m_InValid = false;

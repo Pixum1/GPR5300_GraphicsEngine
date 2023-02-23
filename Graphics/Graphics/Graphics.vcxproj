@@ -146,7 +146,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="project\cpp-files\manager\ObjLoader.cpp" />
     <ClCompile Include="project\cpp-files\gameobjects\components\Component.cpp" />
     <ClCompile Include="project\cpp-files\manager\ContentManager.cpp" />
     <ClCompile Include="project\cpp-files\gameobjects\materials\Cubemap.cpp" />
@@ -159,10 +158,8 @@
     <ClCompile Include="project\cpp-files\gameobjects\Entity.cpp" />
     <ClCompile Include="project\cpp-files\Game.cpp" />
     <ClCompile Include="project\cpp-files\main.cpp" />
-    <ClCompile Include="project\cpp-files\gameobjects\Transform2D.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="project\header-files\manager\ObjLoader.h" />
     <ClInclude Include="project\header-files\gameobjects\components\Component.h" />
     <ClInclude Include="project\header-files\manager\ContentManager.h" />
     <ClInclude Include="project\header-files\gameobjects\materials\Cubemap.h" />
@@ -180,7 +177,6 @@
     <ClInclude Include="project\header-files\misc\GraphicsPCH.h" />
     <ClInclude Include="project\header-files\gameobjects\materials\Texture.h" />
     <ClInclude Include="project\header-files\gameobjects\Transform.h" />
-    <ClInclude Include="project\header-files\gameobjects\Transform2D.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader\NormalmapPixelShader.hlsl">

@@ -3,18 +3,7 @@
 #include "../../header-files/manager/ContentManager.h"
 #include "../../header-files/gameobjects/components/Mesh.h"
 #include "../../header-files/gameobjects/materials/Material.h"
-
-CContentManager::CContentManager()
-{
-}
-
-CContentManager::~CContentManager()
-{
-}
-
-void CContentManager::Init()
-{
-}
+#include "../../header-files/gameobjects/materials/Cubemap.h"
 
 void CContentManager::Update(float _deltaTime)
 {
@@ -23,19 +12,20 @@ void CContentManager::Update(float _deltaTime)
 		itr->Update(_deltaTime);
 
 		if (Rotate)
-		{
 			itr->Rotate(_deltaTime);
-		}
 
 		if (Move)
-		{
 			itr->Move(_deltaTime);
-		}
 
 		if (Resize)
-		{
 			itr->Resize(_deltaTime);
-		}
+	}
+
+	if (p_skybox != nullptr)
+	{
+		p_skybox->Update(_deltaTime);
+		p_skybox->p_transform->TranslationMatrix = XMMatrixTranslation(XMVectorGetX(XMLoadFloat3(&GetGame->m_camPos)), XMVectorGetY(XMLoadFloat3(&GetGame->m_camPos)), XMVectorGetZ(XMLoadFloat3(&GetGame->m_camPos)));
+		p_skybox->p_transform->WorldMatrix = p_skybox->p_transform->LocalScaleMatrix * p_skybox->p_transform->RotationMatrix * p_skybox->p_transform->TranslationMatrix;
 	}
 
 	CleanUp();
@@ -50,6 +40,9 @@ void CContentManager::Render()
 			itr->GetComponent<CMesh>()->Render();
 		}
 	}
+
+	if (p_skybox != nullptr)
+		p_skybox->GetComponent<CMesh>()->Render();
 }
 
 bool CContentManager::AddEntity(CEntity* _entity)
@@ -94,6 +87,18 @@ bool CContentManager::ContainsEntity(CEntity* _entity)
 	}
 
 	return false;
+}
+
+int CContentManager::CreateSkyBox()
+{
+	p_skybox = new CEntity(XMFLOAT3(0, 0, 0));
+	SHC.CreateSphere(p_skybox->AddComponent<CMesh>(), 40, 40);
+	p_skybox->GetComponent<CMesh>()->SetMaterial(new CMaterial(DXS.m_device, DXS.m_deviceContext,
+		L"SkyboxPixelShader.cso", L"SkyboxVertexShader.cso", new CCubemap(L"..\\Assets\\Skybox.dds", Albedo), nullptr));
+
+	p_skybox->Init();
+
+	return 0;
 }
 
 void CContentManager::CleanUp()

@@ -1,9 +1,5 @@
 #include "../../header-files/gameobjects/Transform.h"
 
-void CTransform::Init()
-{
-}
-
 void CTransform::Update()
 {
 	TranslationMatrix = XMMatrixTranslation(Position.x, Position.y, Position.z);
@@ -21,6 +17,3 @@ void CTransform::Update()
 	WorldMatrix = LocalScaleMatrix * RotationMatrix * TranslationMatrix;
 }
 
-void CTransform::DeInit()
-{
-}
