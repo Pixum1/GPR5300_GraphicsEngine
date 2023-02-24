@@ -1,7 +1,7 @@
 #include "../../header-files/misc/GraphicsPCH.h"
 #include "../../header-files/manager/ShapeCreator.h"
 
-void ShapeCreator::CreateCube(CMesh* _p_mesh, XMFLOAT4 _color)
+void ShapeCreator::CreateCube(Mesh* _p_mesh, XMFLOAT4 _color)
 {
 	_p_mesh->VertexCount = 4 * 6;
 	_p_mesh->IndexCount = 6 * 6;
@@ -60,7 +60,7 @@ void ShapeCreator::CreateCube(CMesh* _p_mesh, XMFLOAT4 _color)
 	}
 }
 
-void ShapeCreator::CreateOktaeder(CMesh* _p_mesh, XMFLOAT4 _color)
+void ShapeCreator::CreateOktaeder(Mesh* _p_mesh, XMFLOAT4 _color)
 {
 	_p_mesh->VertexCount = 8 * 3;
 	_p_mesh->IndexCount = 8 * 3;
@@ -107,7 +107,7 @@ void ShapeCreator::CreateOktaeder(CMesh* _p_mesh, XMFLOAT4 _color)
 	}
 }
 
-void ShapeCreator::CreateSphere(CMesh* _p_mesh, int _slices, int _heightSegments, XMFLOAT4 _color)
+void ShapeCreator::CreateSphere(Mesh* _p_mesh, int _slices, int _heightSegments, XMFLOAT4 _color)
 {
 	if (_slices < 2 || _heightSegments < 3)
 		return;
@@ -173,7 +173,7 @@ void ShapeCreator::CreateSphere(CMesh* _p_mesh, int _slices, int _heightSegments
 	}
 }
 
-void ShapeCreator::CreatePlane(CMesh* _p_mesh, XMFLOAT4 _color)
+void ShapeCreator::CreatePlane(Mesh* _p_mesh, XMFLOAT4 _color)
 {
 	_p_mesh->VertexCount = 4;
 	_p_mesh->IndexCount = 6;

@@ -4,7 +4,7 @@
 #include "../../../header-files/gameobjects/materials/Material.h"
 
 
-bool CMesh::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
+bool Mesh::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
 {
 	p_dxdevice = _p_dxdevice;
 	p_dxcontext = _p_dxcontext;
@@ -12,7 +12,7 @@ bool CMesh::Init(ID3D11Device* _p_dxdevice, ID3D11DeviceContext* _p_dxcontext)
 	return 0;
 }
 
-bool CMesh::Start()
+bool Mesh::Start()
 {
 	if (p_Material != nullptr)
 		p_Material->Start();
@@ -45,12 +45,12 @@ bool CMesh::Start()
 	}
 }
 
-void CMesh::Update()
+void Mesh::Update()
 {
 
 }
 
-bool CMesh::DeInit()
+bool Mesh::DeInit()
 {
 	SafeRelease(vertexBuffer);
 	SafeRelease(indexBuffer);
@@ -58,7 +58,7 @@ bool CMesh::DeInit()
 	return true;
 }
 
-void CMesh::Render()
+void Mesh::Render()
 {
 	objectConstantBuffer.Matrix = p_Entity->p_transform->WorldMatrix;
 
@@ -97,7 +97,7 @@ void CMesh::Render()
 
 }
 
-void CMesh::SetMaterial(Material* _mat)
+void Mesh::SetMaterial(Material* _mat)
 {
 	p_Material = _mat;
 	p_Material->Init();

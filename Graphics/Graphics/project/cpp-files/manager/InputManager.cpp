@@ -1,5 +1,5 @@
-#include "../../header-files/manager/InputManager.h"
 #include "../../header-files/misc/GraphicsPCH.h"
+#include "../../header-files/manager/InputManager.h"
 #include "../../header-files/Game.h"
 
 int InputManager::InitDirectInput(HINSTANCE _hInstance)
@@ -54,6 +54,8 @@ void InputManager::DetectInput()
 
 void InputManager::DeInit()
 {
+	SafeRelease(mouse);
+	SafeRelease(keyboard);
 }
 
 bool InputManager::GetKey(int _keyID)
@@ -72,16 +74,6 @@ bool InputManager::GetKeyDown(int _keyID)
 {
 	return (currentKeyboardState[_keyID] & 0x80) &&
 		!(lastKeyboardState[_keyID] & 0x80);
-}
-
-XMFLOAT2 InputManager::GetMouseMovement()
-{
-	return XMFLOAT2(currentMouseSate.lX, currentMouseSate.lY);
-}
-
-float InputManager::GetMouseWheel()
-{
-	return currentMouseSate.lZ;
 }
 
 bool InputManager::GetMouseKey(int _keyID)

@@ -5,10 +5,10 @@
 
 class Material;
 
-class CMesh : public Component
+class Mesh : public Component
 {
 public:
-	CMesh(Entity* _p_entity) : Component(_p_entity) {}
+	Mesh(Entity* _p_entity) : Component(_p_entity) {}
 	/// <summary>
 	/// Assigns DirectX device and context
 	/// </summary>

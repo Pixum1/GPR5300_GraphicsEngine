@@ -42,9 +42,9 @@ public:
 	/// <returns></returns>
 	bool GetKeyDown(int _keyID);
 
-	inline XMFLOAT2 GetMousePos() { return  mousePos; }
-	XMFLOAT2 GetMouseMovement();
-	float GetMouseWheel();
+	inline XMFLOAT2 GetMousePosition() { return mousePos; }
+	inline XMFLOAT2 GetMouseMovement() { return XMFLOAT2(currentMouseSate.lX, currentMouseSate.lY); }
+	inline float GetMouseWheel() { return currentMouseSate.lZ; }
 
 	/// <summary>
 	/// True while a mousekey is pressed

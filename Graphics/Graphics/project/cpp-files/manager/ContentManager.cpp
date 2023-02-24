@@ -48,15 +48,15 @@ void ContentManager::Render()
 	// Render entities
 	for (auto itr : entities)
 	{
-		if (itr->GetComponent<CMesh>() != nullptr)
+		if (itr->GetComponent<Mesh>() != nullptr)
 		{
-			itr->GetComponent<CMesh>()->Render();
+			itr->GetComponent<Mesh>()->Render();
 		}
 	}
 
 	// Render skybox
 	if (p_skybox != nullptr)
-		p_skybox->GetComponent<CMesh>()->Render();
+		p_skybox->GetComponent<Mesh>()->Render();
 }
 
 bool ContentManager::AddEntity(Entity* _entity)
@@ -107,8 +107,8 @@ bool ContentManager::ContainsEntity(Entity* _entity)
 int ContentManager::CreateSkyBox()
 {
 	p_skybox = new Entity(XMFLOAT3(0, 0, 0));
-	SHC.CreateSphere(p_skybox->AddComponent<CMesh>(), 40, 40);
-	p_skybox->GetComponent<CMesh>()->SetMaterial(new Material(DXS.DxDevice, DXS.DxContext,
+	SHC.CreateSphere(p_skybox->AddComponent<Mesh>(), 40, 40);
+	p_skybox->GetComponent<Mesh>()->SetMaterial(new Material(DXS.DxDevice, DXS.DxContext,
 		L"SkyboxPixelShader.cso", L"SkyboxVertexShader.cso", new Cubemap(L"..\\Assets\\Skybox.dds", Albedo), nullptr));
 
 	p_skybox->Init();
