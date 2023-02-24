@@ -3,7 +3,7 @@
     - WASD, Space & Ctrl to move
     - Hold right mouse button to look around
     - Scroll mousewheel to change movement speed
-    - Escape to close the program
+    - Escape to close the application
 
     - Press '1' to change rasterizerstate
     - Hold '2' to rotate all objects
