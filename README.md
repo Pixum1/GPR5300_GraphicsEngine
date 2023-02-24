@@ -1,6 +1,5 @@
 # GPR5300_GraphicsEngine
 
-Controls: 
     - WASD, Space & Ctrl to move
     - Hold right mouse button to look around
     - Scroll mousewheel to change movement speed
